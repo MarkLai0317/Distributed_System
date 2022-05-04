@@ -1,4 +1,5 @@
 const db = require('../services/db'); // dp 裡的function 用ㄌㄞquery 和 改資料的
+//const db = require('../services/db-shard.js')
 const listPerPage = 10;
 
 // customer show all shopName ------------------

@@ -3,10 +3,55 @@ const config = require('./config');
 const app = express();
 const port = 9000 || process.env.PORT;
 //const quotesRouter = require('./routes/quotes');
-const markRouter = require('./routes/mark');
+//const markRouter = require('./routes/mark');
+
+const customerRouter = require('./routes/customer.js')
+const managerRouter = require('./routes/manager.js')
+const chatRouter = require('./routes/chat.js')
 const nnRouter = require('./routes/nn');
 const niRouter = require('./routes/ni');
 
+
+
+
+var EventEmitter = require('events');
+class MyEmitter extends EventEmitter {}
+const myEmitter = new MyEmitter();
+
+const { v4: uuidv4 } = require('uuid');
+
+var mqtt = require('mqtt')
+
+var option = {  
+    qos:2,
+}
+var client = mqtt.connect('mqtt://localhost:8888', {clientId : 'server'})
+
+var shardKeys = ['sharding/customer-1', 'sharding/customer-2', 'sharding/manager-1','sharding/chatRecord']
+// shardNum 可自己變換 看要哪個
+const shard =  (shardNum, serviceId, parameters) => {
+    
+
+  return new Promise((resolve, reject) => {
+  // This assumes that the events are mutually exclusive
+    let transactionId = uuidv4()
+    
+    let request = {
+      serviceId: serviceId,
+      transactionId: transactionId,
+      parameters: parameters
+    }
+    client.subscribe(transactionId, (err)=>{
+      client.publish(shardKeys[shardNum], JSON.stringify(request))
+    })
+
+    myEmitter.on(transactionId, (result)=>{
+      client.unsubscribe(transactionId)
+      resolve(result)
+    })
+
+  });
+}
 
 var cors = require('cors');
 
@@ -23,10 +68,21 @@ app.get('/', (req, res) => {
 });
 
 //app.use('/quotes', quotesRouter);
-app.use('/mark', markRouter);
+//app.use('/mark', markRouter({shard: shard}));
+
+app.use('/customer', customerRouter({shard:shard}))
+app.use('/manager', managerRouter({shard:shard}))
+app.use('/chat', chatRouter({shard: shard}))
 app.use('/nn', nnRouter);
 app.use('/ni', niRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+client.on('message', (topic, message, packet) =>{
+  
+  let result = JSON.parse(message)
+
+  myEmitter.emit(topic, result)
+})
