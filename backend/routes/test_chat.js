@@ -7,8 +7,8 @@ const router = express.Router();
 
 module.exports = function(globalVariables){
 
-  const shard = globalVariables.shard 
-
+  
+  //const shard = globalVariables.shard 
   
 
 

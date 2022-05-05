@@ -10,6 +10,7 @@ const managerRouter = require('./routes/manager.js')
 const chatRouter = require('./routes/chat.js')
 const nnRouter = require('./routes/nn');
 const niRouter = require('./routes/ni');
+const testChatRouter = require('./routes/test_chat.js')
 
 
 
@@ -72,7 +73,8 @@ app.get('/', (req, res) => {
 
 app.use('/customer', customerRouter({shard:shard}))
 app.use('/manager', managerRouter({shard:shard}))
-app.use('/chat', chatRouter({shard: shard}))
+//app.use('/chat', chatRouter({shard: shard}))
+app.use('/chat', testChatRouter)
 app.use('/nn', nnRouter);
 app.use('/ni', niRouter);
 
