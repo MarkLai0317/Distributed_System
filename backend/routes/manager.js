@@ -99,7 +99,105 @@ module.exports = function (globalVariables) {
 
   //===========上面田詠恩   下面倪靖揚＝＝＝＝＝＝＝
 
+  router.get('/Revenue', async function(req, res, next) {
+    try {
+      let result = await shard(2, '/Revenue', { ManagerID: req.query.ManagerID})
+      res.json(result);
+    } catch(err) {
+      console.error(`Error while getting revenue `, err.message);
+      next(err);
+    }
+  });
 
+  router.get('/TradeHistory', async function(req, res, next) {
+    try {
+      let result = await shard(2, '/TradeHistory', { ManagerID: req.query.ManagerID, page: req.query.page})
+      res.json(result);
+    } catch(err) {
+    console.error(`Error while getting trade_history `, err.message);
+    next(err);
+    }  
+  });
+
+  router.get('/Shop', async function(req, res, next) {
+    try {
+      let result = await shard(2, '/Shop', { ManagerID: req.query.ManagerID})
+      res.json(result);
+    } catch(err) {
+    console.error(`Error while getting shop `, err.message);
+    next(err);
+    }  
+  });
+
+  router.get('/OrderHistory',async function(req, res, next) {
+    try {
+      let result = await shard(2, '/OrderHistory', { ManagerID: req.query.ManagerID})
+      res.json(result);
+    } catch(err) {
+    console.error(`Error while getting order_history `, err.message);
+    next(err);
+    }  
+  });
+
+  router.get('/Order', async function(req, res, next) {
+    try {
+      let result = await shard(2, '/Order', null)
+      res.json(result);
+    } catch(err) {
+    console.error(`Error while getting order `, err.message);
+    next(err);
+    }  
+  });
+
+  router.post('/register/Manager', async function(req, res, next) {
+  try {
+    let result = await shard(2, '/register/Manager', req.body)
+    res.json(result);
+  } catch(err) {
+    console.error(`Error while adding Manager `, err.message);
+    next(err);
+  }
+  });
+
+  router.get('/GetStoreHouseID',async function(req, res, next) {
+  try {
+    let result = await shard(2, '/GetStoreHouseID', null)
+    res.json(result);
+  } catch(err) {
+  console.error(`Error while getting StoreHouseID `, err.message);
+  next(err);
+  }  
+  });
+
+  router.get('/GetHave',async function(req, res, next) {
+  try {
+    let result = await shard(2, '/GetHave', { ManagerID: req.query.ManagerID})
+    res.json(result);
+  } catch(err) {
+  console.error(`Error while getting Have `, err.message);
+  next(err);
+  }  
+  });
+
+  router.get('/GetForsale',async function(req, res, next) {
+  try {
+    let result = await shard(2, '/GetForsale', { ManagerID: req.query.ManagerID})
+    res.json(result);
+  } catch(err) {
+  console.error(`Error while getting ForSale `, err.message);
+  next(err);
+  }  
+  });
+
+  router.post('/PriceChange',async function(req, res, next) {
+  try {
+    let result = await shard(2, '/PriceChange', req.body)
+    res.json(result);
+  } catch(err) {
+    console.error(`Error while changing price `, err.message);
+    next(err);
+  }
+  });
 
 
   return router
