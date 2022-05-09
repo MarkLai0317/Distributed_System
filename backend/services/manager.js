@@ -192,9 +192,9 @@ function deleteForSell(data) {
 //===========上面田詠恩   下面倪靖揚＝＝＝＝＝＝＝
 
 //manager revenue
-function Revenue(ManagerID){
+function Revenue(parameters){
   // return ManagerID;
-
+  const { ManagerID} = parameters
   const data= db.query(`SELECT Time,Price
                         from Trade_History
                         where ShopManagerID= ?
@@ -202,7 +202,8 @@ function Revenue(ManagerID){
   return {data};
 }
 //manager tradehistory
-function TradeHistory(ManagerID,page=1){
+function TradeHistory(parameters){
+  const { ManagerID, page } = parameters
   const offset = (page - 1) * listPerPage;
   let data=[];
   const hid= db.query(`select Trade_History.HistoryID
@@ -241,7 +242,8 @@ function TradeHistory(ManagerID,page=1){
   
 }
 //manager shop
-function Shop(ManagerID){
+function Shop(parameters){
+  const { ManagerID} = parameters
   const data=db.query(`select Product.Name as ProductName,Product.SupplierID,For_Sell.Num
                        ,For_Sell.Price from Product,
                        For_Sell where For_Sell.ProductSupplierID=Product.SupplierID and 
@@ -249,7 +251,8 @@ function Shop(ManagerID){
   return{data};
 }
 // manager OrderHistory
-function OrderHistory(ManagerID){
+function OrderHistory(parameters){
+  const { ManagerID} = parameters
   const data= db.query(`select OrderHistoryID,Order_History.Time,Product.Name as ProductName
                         ,Order_History.Num,Supplier.Name as SupplierName
                         from Order_History,Product,Supplier
@@ -318,7 +321,8 @@ function GetStoreHouseID(){
                          `,[])
   return {data};
 }
-function GetHave(ManagerID){
+function GetHave(parameters){
+  const { ManagerID } = parameters
   const data = db.query(`SELECT Have.ProductID,Have.ProductSupplierID as SupplierID,Product.Name as ProductName
                          ,Have.Num,Have.StoreHouseID
                          from Have,Product
@@ -326,7 +330,8 @@ function GetHave(ManagerID){
                          and Have.ProductID=Product.ProductID`,[ManagerID])
   return {data};
 }
-function GetForSale(ManagerID){
+function GetForSale(parameters){
+  const { ManagerID} = parameters
   const data = db.query(`SELECT For_Sell.ProductID,For_Sell.ProductSupplierID as SupplierID
                          ,Product.Name as ProductName,For_Sell.Price,For_Sell.Num
                          from For_Sell,Product
