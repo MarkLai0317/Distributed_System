@@ -19,6 +19,7 @@ function getHistoryTest(UserId){
     }
     return msgHIstory
 }
+
 module.exports = {
-    '/msg/getHistory': getHistoryTest,
+    '/getHistory': getHistoryTest,
 }
