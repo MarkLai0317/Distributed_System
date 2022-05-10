@@ -1,14 +1,14 @@
-const chat = require('../services/chat.js');
+const chat = require('../services/test_chat.js');
 
 var mqtt = require('mqtt');
-var client = mqtt.connect('mqtt://localhost:8888', {clientId: 'shardings/customer-1'});
+var client = mqtt.connect('mqtt://localhost:8888', {clientId: 'sharding/chatRecord'});
 var option = {
     qos: 2
 }
 
 client.on('connect', ()=>{
   console.log("connect success");
-  client.subscribe('sharding/customer-1', option);
+  client.subscribe('sharding/chatRecord', option);
 })
 
 // data = {
