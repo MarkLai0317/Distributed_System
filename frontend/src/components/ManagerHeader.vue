@@ -5,7 +5,8 @@
     <el-button @click="toTradeHistory">Trade History</el-button>
     <el-button @click="toOrder">Order</el-button>
     <el-button @click="toShop">Shop</el-button>
-    <el-button @click="toRevenue">Revenue</el-button>  
+    <el-button @click="toRevenue">Revenue</el-button>
+    <el-button @click="toChat">Chat</el-button> 
   </el-container>
 </template>
 <script>
@@ -32,6 +33,9 @@ export default {
     },
     toRevenue(){
         this.$router.push({ path: "revenue"})
+    },
+    toChat(){
+        this.$router.push({path: "chat"})
     },
     signOut() {
       this.firebase
