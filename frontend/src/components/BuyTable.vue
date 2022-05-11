@@ -87,7 +87,7 @@ export default {
 
       this.page = val
       //get 寫法
-      this.axios.get('http://127.0.0.1:9000/nn/searchProduct', {
+      this.axios.get('http://127.0.0.1:9000/customer/searchProduct', {
         params: {
           //get 參數放這裡
           ShopID: this.currentShopName, // ShopName ---
@@ -115,7 +115,7 @@ export default {
     pressAdd(index,row) {
       console.log(index)
       console.log(row)
-      this.axios.post('http://127.0.0.1:9000/nn/add', {
+      this.axios.post('http://127.0.0.1:9000/customer/add', {
         // post 參數放這裡
         CustomerID: this.firebase.auth().currentUser.email,
         ShopID: row.ShopID,
@@ -153,7 +153,7 @@ export default {
     },
     // get the total number of pages 
     getMaxPage(){
-      this.axios.get('http://127.0.0.1:9000/nn/maxPage', {
+      this.axios.get('http://127.0.0.1:9000/customer/maxPage', {
         params: {
           //get 參數
           ShopID: this.currentShopName, 
@@ -175,7 +175,7 @@ export default {
 
     },
     getAllType(){
-      this.axios.get('http://127.0.0.1:9000/nn/getType', {
+      this.axios.get('http://127.0.0.1:9000/customer/getType', {
         params: {
           // no parameters
         }
@@ -199,7 +199,7 @@ export default {
       })
     },
     getAllShopID(){
-      this.axios.get('http://127.0.0.1:9000/nn/getShopList', {
+      this.axios.get('http://127.0.0.1:9000/customer/getShopList', {
         params: {
           // no parameters
         }
