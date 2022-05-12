@@ -1,25 +1,22 @@
-function getHistoryTest(UserId){
-    //先寫死 測試
-    const msgHIstory = {
-        '01':[
-            {From:'01', Date: 1519129853500, Msg:"Hi I'm 01"},
-            {From: UserId, Date:1519129857500, Msg:`Hi I'm ${UserId}`},
-            {From:'01', Date: 1519129893500, Msg:"OK COOL"},
-        ],
-        '02':[
-            {From:'02', Date: 1519129853500, Msg:"Hi I'm 02"},
-            {From: UserId, Date:1519129857500, Msg:`Hi I'm ${UserId}`},
-            {From:'02', Date: 1519129893500, Msg:"OK COOL"},
-        ],
-        '03':[
-            {From:'03', Date: 1519129853500, Msg:"Hi I'm 03"},
-            {From: UserId, Date:1519129857500, Msg:`Hi I'm ${UserId}`},
-            {From:'03', Date: 1519129893500, Msg:"OK COOL"},
-        ],
-    }
-    return msgHIstory
+const MongoClient = require("mongodb").MongoClient;
+
+async function getHistoryTest(UserId) {
+	const client = await MongoClient.connect("mongodb://localhost:27017").catch(
+		(err) => console.log(err, "coneecting")
+	);
+	if (!client) return;
+	try {
+		const db = client.db("dis_sys");
+		const collection = db.collection("chat");
+		const res = await collection.findOne({ _id: UserId.UserId });
+		return res.msgs;
+	} catch (err) {
+		console.log(err, "query");
+	} finally {
+		client.close();
+	}
 }
 
 module.exports = {
-    '/getHistory': getHistoryTest,
-}
+	"/getHistory": getHistoryTest,
+};
