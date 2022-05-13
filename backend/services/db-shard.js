@@ -1,16 +1,17 @@
-const sqlite = require('better-sqlite3');
-const path = require('path');
-//const db = new sqlite(path.resolve('relation.db'), {fileMustExist: true});
-const db = new sqlite('../relation.db', {fileMustExist: true});
-function query(sql, params) {
-  return db.prepare(sql).all(params);
-}
 
-function run(sql, params) {
-  return db.prepare(sql).run(params);
-}
+module.exports = class DB {
+  constructor() {
+    this.mysql = require('mysql2/promise');
+    this.conn = await this.mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: 'bryant@0720',
+      database: 'relation'
+    });
+  };
 
-module.exports = {
-  query,
-  run
+  async run(sql, variable) {
+    await this.conn.execute(sql, variable)
+    return new Promise((resolve, reject) => resolve(rows));
+  }
 }

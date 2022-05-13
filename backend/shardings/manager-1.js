@@ -1,4 +1,7 @@
-const manager = require('../services/manager.js');
+var DB = require('../services/d-shard.js')
+const db = new DB()
+
+const manager = require('../services/manager.js')(db);
 
 var mqtt = require('mqtt');
 var client = mqtt.connect('mqtt://localhost:8888', {clientId: 'shardings/manager-1'});
