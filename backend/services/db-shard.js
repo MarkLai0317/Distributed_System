@@ -11,7 +11,7 @@ module.exports = class DB {
   };
 
   async run(sql, variable) {
-    await this.conn.execute(sql, variable)
+    const [rows, fields] = await this.conn.execute(sql, variable)
     return new Promise((resolve, reject) => resolve(rows));
   }
 }
