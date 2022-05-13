@@ -17,9 +17,9 @@ client.on('connect', ()=>{
 //   transactionId:"1234"
 // }
 
-const requestHandler = (serviceId, transactionId,  parameters) =>{
+const requestHandler = async (serviceId, transactionId,  parameters) =>{
   
-  let result = manager[serviceId](parameters, transactionId)
+  let result = await manager[serviceId](parameters, transactionId)
 //let result = customer[serviceId](parameters, transactionId)
   client.publish(transactionId, JSON.stringify(result))
 
