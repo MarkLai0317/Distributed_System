@@ -2,7 +2,7 @@
 
 
 
-module.exports = function (db) {
+module.exports = function (connection) {
 
   const listPerPage = 10
 

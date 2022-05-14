@@ -1,8 +1,12 @@
-var DB = require('../services/d-shard.js')
+// var DB = require('../services/d-shard.js')
+// const db = new DB()
+const { database_config } = require('../config');
 
-const db = new DB()
 
-const customer = require('../services/customer.js')(db);
+var mysql = require('mysql2/promise');
+var connection = await this.mysql.createConnection(database_config)
+
+const customer = require('../services/customer.js')(connection);
 
 var mqtt = require('mqtt');
 var client = mqtt.connect('mqtt://localhost:8888', {clientId: 'shardings/customer-2'});
