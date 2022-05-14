@@ -4,7 +4,7 @@ const { database_config } = require('../config');
 
 
 var mysql = require('mysql2/promise');
-var connection = await this.mysql.createConnection({ database_config})
+var connection = await this.mysql.createConnection(database_config)
 
 const customer = require('../services/customer.js')(connection);
 
