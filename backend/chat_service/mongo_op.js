@@ -2,66 +2,70 @@
 var MongoClient = require('mongodb').MongoClient;
 const url = "mongodb://localhost:27017"
 
-function saveMsg(from, to, msg, date){ //saving message to mongodb 
-    // Connect to the db
-    MongoClient.connect(url, (err, client)=>{
-    
-        if(err) throw err;
-    
-        const db = client.db('dis_sys')
-        db.collection('chat').findOne({_id: from}, (err, result)=>{
-            if(err) throw err;
+async function saveMsg(from, to, msg, date){ //saving message to mongodb 
+    const record = {
+        Msg: msg,
+        From: from,
+        Date: date
+    }
 
-            console.log(result.msgs[to])
+    const client = await MongoClient.connect(url)
+    const db = client.db('dis_sys')
+    let collection = db.collection('chat')
 
-            const rec = {
-                Msg: msg,
-                From: from,
-                Date: date
+    // saving message to sender's chat history
+    let result = await collection.findOne({_id: from})
+
+    if(result == null){ //if the sender's chat history is empty
+        let obj = { //create a new chat history
+            _id: from,
+            msgs: {
+                [to]: [record]
             }
+        }
+        await collection.insertOne(obj)
+    }
+    else{
+        let msgs = result.msgs
+        if(msgs[to] == undefined){
+            msgs[to] = [record] //if there is no message in this shop, create a new array
+        }
+        else{
+            msgs[to].push(record) //if there is message in this shop, push the new message to the array
+        }
+        await collection.updateOne({_id: from}, {$set: {msgs: msgs}})
+    }
 
-            result.msgs[to].push(rec)
-            console.log(result.msgs[to])
+    // saving message to receiver's chat history
+    result = await collection.findOne({_id: to})
 
-            db.collection('chat').updateOne({_id: from}, {$set: {msgs: result.msgs}}, (err)=>{
-                if(err) throw err;
-                client.close();
-            })
-        })
+    if(result == null){ //if the receiver's chat history is empty
+        let obj = { //create a new chat history
+            _id: to,
+            msgs: {
+                [from]: [record]
+            }
+        }
+        await collection.insertOne(obj)
+    }
+    else{
+        let msgs = result.msgs
+        if(msgs[from] == undefined){
+            msgs[from] = [record] //if there is no message in this shop, create a new array
+        }
+        else{
+            msgs[from].push(record) //if there is message in this shop, push the new message to the array
+        }
+        await collection.updateOne({_id: to}, {$set: {msgs: msgs}})
+    }
 
-    });
+    client.close()
 }
 
-// saveMsg("91", "shop01", "Hello", "12345678")
+saveMsg("92", "93", "Hello", "12345678")
 
-function delMsg(from, to, msg, date){ //deleting message from mongodb 
-    // Connect to the db
-    MongoClient.connect(url, (err, client)=>{
+async function delMsg(from, to, msg, date){ //deleting message from mongodb 
     
-        if(err) throw err;
-    
-        const db = client.db('dis_sys')
-        db.collection('chat').findOne({_id: from}, (err, result)=>{
-            if(err) throw err;
-
-            console.log(result.msgs[to])
-
-            const rec = {
-                Msg: msg,
-                From: from,
-                Date: date
-            }
-
-            result.msgs[to].splice(result.msgs[to].indexOf(rec), 1)
-            console.log(result.msgs[to])
-
-            db.collection('chat').updateOne({_id: from}, {$set: {msgs: result.msgs}}, (err)=>{
-                if(err) throw err;
-                client.close();
-            })
-        })
-
-    });
 }
 
-delMsg("91", "shop01", "Hello", "12345678")
+// delMsg("91", "shop01", "Hello", "12345678")
