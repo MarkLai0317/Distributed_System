@@ -1,7 +1,7 @@
 //const db = require('../services/db-shard.js'); // dp 裡的function 用ㄌㄞquery 和 改資料的
 
 
-module.exports = function (db) {
+module.exports = function (connection) {
 
 
   const listPerPage = 10
