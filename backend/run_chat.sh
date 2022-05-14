@@ -6,4 +6,4 @@ node broker.js &
 } &
 sleep 4
 cd ..
-node index
+node index.js
