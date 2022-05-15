@@ -17,8 +17,9 @@ const customer_ = require('../services/customer.js');
   }
 
   //參數自己寫
-  // parameters = { 'email': '108703029@nccu.edu.tw' }
-  parameters = { 'CustomerID': 'test1', 'Name': 'test', 'PhoneNum': 'test' }
-  requestHandler('/register/Customer', 111, parameters)
+  parameters = { 'CustomerID': '108703029@nccu.edu.tw' }
+  // parameters = { 'CustomerID': 'test1', 'Name': 'test', 'PhoneNum': 'test' }
+  // parameters = {}
+  requestHandler('/existCustomer', 111, parameters)
 
 })()

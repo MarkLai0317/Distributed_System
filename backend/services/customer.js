@@ -46,25 +46,29 @@ module.exports = function (connection) {
                             WHERE CustomerID = ?`, [CustomerID])
     // console.log(data)
     return new Promise((resolve, reject) =>
-      resolve(data.length > 0)
+      resolve({ exist: data.length > 0 })
     )
   }
 
   //  ------- nn customer ---------
 
   // customer show all shopName 
-  function getShopList() {
-    const data = db.query(`SELECT distinct ShopID, Name as ShopName 
+  async function getShopList() {
+    const [data, fields] = await connection.execute(`SELECT distinct ShopID, Name as ShopName 
                           FROM Shop`, []);
-    return { data };
+    return new Promise((resolve, reject) =>
+      resolve({ data })
+    );
   }
 
   // customre: getType  
-  function getType() {
-    const data = db.query(`SELECT distinct  Type 
+  async function getType() {
+    const [data, fields] = await connection.execute(`SELECT distinct  Type 
                           FROM For_Sell LEFT JOIN Product ON Product.ProductID = For_Sell.ProductID 
                           AND Product.SupplierID = For_Sell.ProductSupplierID`, []);
-    return { data };
+    return new Promise((resolve, reject) =>
+      resolve({ data })
+    );
   }
 
   // customer maxPage 
