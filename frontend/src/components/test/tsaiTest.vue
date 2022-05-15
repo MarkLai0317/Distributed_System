@@ -1,18 +1,21 @@
 <template>
-  <el-table
-    ref="singleTable"
-    :data="ShopList"
-    highlight-current-row
-    @current-change="handleCurrentChange"
-    max-height="1000"
-    style="width: 30%">
-    <el-table-column
-      property="ShopName"
-      label="Shops"
-      width="120">
-    </el-table-column>
-  </el-table>
-  
+  <el-container>
+    <el-aside>
+      <el-table
+        ref="singleTable"
+        :data="ShopList"
+        highlight-current-row
+        @current-change="handleCurrentChange"
+        max-height="1000"
+        style="width: 30%">
+        <el-table-column
+          property="ShopName"
+          label="Shops"
+          width="120">
+        </el-table-column>
+      </el-table>
+    </el-aside>
+  </el-container>
 </template>
 
 <script>
