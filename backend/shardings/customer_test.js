@@ -1,17 +1,25 @@
-const { database_config } = require('../config');
+const customer_ = require('../services/customer.js');
+(async function () {
+  const { database_config } = require('../config');
 
+  // async function()
+  var mysql = require('mysql2/promise');
+  var connection = await mysql.createConnection(database_config)
 
-var mysql = require('mysql2/promise');
-var connection = await this.mysql.createConnection(database_config)
+  const customer = customer_(connection);
 
-const customer = require('../services/customer.js')(connection);
+  const requestHandler = async (serviceId, transactionId, parameters) => {
 
-const requestHandler = async (serviceId, transactionId,  parameters) =>{
-  
-  let result = await customer[serviceId](parameters)
-//let result = customer[serviceId](parameters, transactionId)
-  console.log(result)
+    let result = await customer[serviceId](parameters)
 
+    //let result = customer[serviceId](parameters, transactionId)
+    console.log(result)
+  }
 
-//參數自己寫
-requestHandler(serviceId, transactionId, parameters)
+  //參數自己寫
+  parameters = { 'CustomerID': '108703029@nccu.edu.tw' }
+  // parameters = { 'CustomerID': 'test1', 'Name': 'test', 'PhoneNum': 'test' }
+  // parameters = {}
+  requestHandler('/existCustomer', 111, parameters)
+
+})()

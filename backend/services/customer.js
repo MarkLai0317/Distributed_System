@@ -7,64 +7,69 @@ module.exports = function (connection) {
   const listPerPage = 10
 
 
-  function createNewCustomer(data) {
-    const { Email, Name, PhoneNum } = data
-    const result = db.run('INSERT INTO Customer (CustomerID, Name, PhoneNum) VALUES (@Email, @Name, @PhoneNum)', { Email, Name, PhoneNum });
-    let error = '';
-    if (result.changes) {
+  async function createNewCustomer(data) {
+    const { CustomerID, Name, PhoneNum } = data
+    try {
+      const [result, fields] = await connection.execute('INSERT INTO Customer (CustomerID, Name, PhoneNum) VALUES (?, ?, ?)', [CustomerID, Name, PhoneNum]);
       let message = 'Customer created successfully';
-      return { message, error }
-    } else {
-      error = 'Customer created fail'
-      return { error }
-    }
-
-
-  }
-
-
-  function searchProduct(parameters) {
-    const { shopID, type, page } = parameters
-    const offset = (page - 1) * listPerPage;
-    const data = db.query(`SELECT  Product.ProductID,Product.SupplierID,  For_Sell.ShopID, Product.Name as ProductName, Shop.Name as ShopName
-                            FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
-                            INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
-                                                AND Product.SupplierID = For_Sell.ProductSupplierID
-                            WHERE Type = ? AND Shop.ShopID = ?
-                            LIMIT ?, ?`, [type, shopID, offset, listPerPage])
-    const meta = { page };
-    return {
-      data,
-      meta
+      let error = '';
+      return new Promise((resolve, reject) =>
+        resolve({ message, error })
+      )
+    } catch (err) {
+      let error = 'Customer created fail';
+      return new Promise((resolve, reject) =>
+        resolve({ error })
+      )
     }
   }
 
-  function checkCustomer(parameters) {
-    const { email } = parameters
-    const data = db.query(`SELECT CustomerID 
+
+  // async function searchProduct(parameters) {
+  //   const { shopID, type, page } = parameters
+  //   const offset = (page - 1) * listPerPage;
+  //   const [data, fields] = await connection.execute(`SELECT  Product.ProductID,Product.SupplierID,  For_Sell.ShopID, Product.Name as ProductName, Shop.Name as ShopName
+  //                           FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
+  //                           INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
+  //                                               AND Product.SupplierID = For_Sell.ProductSupplierID
+  //                           WHERE Type = ? AND Shop.ShopID = ?
+  //                           LIMIT ?, ?`, [type, shopID, offset, listPerPage])
+  //   const meta = { page };
+  //   return new Promise((resolve, reject) =>
+  //     resolve({ data, meta })
+  //   );
+  // }
+
+  async function checkCustomer(parameters) {
+    const { CustomerID } = parameters
+    const [data, fields] = await connection.execute(`SELECT CustomerID 
                             FROM Customer 
-                            WHERE CustomerID = ?`, [email])
-    console.log(data)
-    return {
-      exist: data.length > 0
-    }
+                            WHERE CustomerID = ?`, [CustomerID])
+    // console.log(data)
+    return new Promise((resolve, reject) =>
+      resolve({ exist: data.length > 0 })
+    )
   }
 
   //  ------- nn customer ---------
 
   // customer show all shopName 
-  function getShopList() {
-    const data = db.query(`SELECT distinct ShopID, Name as ShopName 
+  async function getShopList() {
+    const [data, fields] = await connection.execute(`SELECT distinct ShopID, Name as ShopName 
                           FROM Shop`, []);
-    return { data };
+    return new Promise((resolve, reject) =>
+      resolve({ data })
+    );
   }
 
   // customre: getType  
-  function getType() {
-    const data = db.query(`SELECT distinct  Type 
+  async function getType() {
+    const [data, fields] = await connection.execute(`SELECT distinct  Type 
                           FROM For_Sell LEFT JOIN Product ON Product.ProductID = For_Sell.ProductID 
                           AND Product.SupplierID = For_Sell.ProductSupplierID`, []);
-    return { data };
+    return new Promise((resolve, reject) =>
+      resolve({ data })
+    );
   }
 
   // customer maxPage 
@@ -409,11 +414,11 @@ module.exports = function (connection) {
 
   }
 
-//===========上面田詠恩   下面倪靖揚＝＝＝＝＝＝＝
+  //===========上面田詠恩   下面倪靖揚＝＝＝＝＝＝＝
 
   return {
     '/register/Customer': createNewCustomer,
-    '/searchProduct': searchProduct,
+    // '/searchProduct': searchProduct,
     '/existCustomer': checkCustomer,
     '/getShopList': getShopList,
     '/getType': getType,
