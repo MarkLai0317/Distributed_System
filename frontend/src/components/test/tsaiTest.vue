@@ -1,5 +1,9 @@
 <template>
   <el-container>
+    <el-header>
+      <span>Chat Room</span>
+    </el-header> 
+    <!-- 
     <el-aside>
       <el-table
         ref="singleTable"
@@ -15,6 +19,10 @@
         </el-table-column>
       </el-table>
     </el-aside>
+-->
+    <el-main>
+      <span>hello</span>
+    </el-main>
   </el-container>
 </template>
 
