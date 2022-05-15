@@ -11,9 +11,10 @@ module.exports = function (connection) {
     const { CustomerID, Name, PhoneNum } = data
     try {
       const [result, fields] = await connection.execute('INSERT INTO Customer (CustomerID, Name, PhoneNum) VALUES (?, ?, ?)', [CustomerID, Name, PhoneNum]);
+      let message = 'Customer created successfully';
       let error = '';
       return new Promise((resolve, reject) =>
-        resolve({ error })
+        resolve({ message, error })
       )
     } catch (err) {
       let error = 'Customer created fail';
