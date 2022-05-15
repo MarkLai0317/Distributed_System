@@ -73,209 +73,242 @@ module.exports = function (connection) {
   }
 
   // customer maxPage 
-  function maxPage(parameters) {
+  async function maxPage(parameters) {
     const { ShopID, Type } = parameters
     //  have no shopid and type
     if (!ShopID && !Type) {
-      const data = db.query(`SELECT  COUNT(Product.SupplierID AND Product.ProductID ) AS temp                       
-                            FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
-                            INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
-                                                AND Product.SupplierID = For_Sell.ProductSupplierID
-                            `, []);
+      const [data, fields] = await connection.execute(`SELECT  COUNT(Product.SupplierID AND Product.ProductID ) AS temp                       
+                                                      FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
+                                                      INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
+                                                            AND Product.SupplierID = For_Sell.ProductSupplierID`, []);
+
       var s = JSON.stringify(data[0].temp);
       const page = Math.ceil(JSON.parse(s) / 10);
-      return { page };
+      return new Promise((resolve, reject) =>
+        resolve({ page })
+      );
+
 
 
 
       // only have type
     } else if (!ShopID) {
-      const data = db.query(`SELECT COUNT( Product.SupplierID AND Product.ProductID) AS temp                         
+      const [data, fields] = await connection.execute(`SELECT COUNT( Product.SupplierID AND Product.ProductID) AS temp                         
                             FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
                             INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
                                                 AND Product.SupplierID = For_Sell.ProductSupplierID
                             WHERE Type = ?`, [Type]);
+
       var s = JSON.stringify(data[0].temp);
       const page = Math.ceil(JSON.parse(s) / 10);
-      return { page };
+      return new Promise((resolve, reject) =>
+        resolve({ page })
+      );
 
 
       // only have shopID
     } else if (!Type) {
-      const data = db.query(`SELECT  COUNT( Product.SupplierID AND Product.ProductID) AS temp                         
+      const [data, fields] = await connection.execute(`SELECT  COUNT( Product.SupplierID AND Product.ProductID) AS temp                         
                             FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
                             INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
                                                 AND Product.SupplierID = For_Sell.ProductSupplierID
                             WHERE Shop.ShopID = ?`, [ShopID]);
+
       var s = JSON.stringify(data[0].temp);
       const page = Math.ceil(JSON.parse(s) / 10);
-      return { page };
+      return new Promise((resolve, reject) =>
+        resolve({ page })
+      );
 
     } else {
-      const data = db.query(`SELECT  COUNT( Product.SupplierID AND Product.ProductID) AS temp                         
+      const [data, fields] = await connection.execute(`SELECT  COUNT( Product.SupplierID AND Product.ProductID) AS temp                         
                             FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
                             INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
                                                 AND Product.SupplierID = For_Sell.ProductSupplierID
                             WHERE Type = ? AND Shop.ShopID = ?`, [Type, ShopID]);
+
       var s = JSON.stringify(data[0].temp);
       const page = Math.ceil(JSON.parse(s) / 10);
-      return { page };
+      return new Promise((resolve, reject) =>
+        resolve({ page })
+      );
     }
 
   }
 
 
   // customer search product  
-  function searchProduct(parameters) {
+  async function searchProduct(parameters) {
     const { ShopID, Type, page } = parameters
     const offset = (page - 1) * listPerPage;
 
     //  have no shopid and type
     if (!ShopID && !Type) {
-      const data = db.query(`SELECT  Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
-                            For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
-                            Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                         
-                            FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
-                            INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
-                                                AND Product.SupplierID = For_Sell.ProductSupplierID
-                            
-                            LIMIT ?, ?`, [offset, listPerPage]);
+      const [data, fields] = await connection.execute(`SELECT  Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
+                                                          For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
+                                                          Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                         
+                                                      FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
+                                                          INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
+                                                          AND Product.SupplierID = For_Sell.ProductSupplierID
+                                                      LIMIT ${offset}, ${listPerPage}`, []);
       // const meta = { page };
-      return { data };
+      return new Promise((resolve, reject) =>
+        resolve({ data })
+      );
 
 
 
       // only have type
     } else if (!ShopID) {
-      const data = db.query(`SELECT  Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
-                            For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
-                            Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                        
-                            FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
-                            INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
-                                                AND Product.SupplierID = For_Sell.ProductSupplierID
-                            WHERE Type = ? 
-                            LIMIT ?, ?`, [Type, offset, listPerPage]);
+      const [data, fields] = await connection.execute(`SELECT Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
+                                                          For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
+                                                          Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                        
+                                                      FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
+                                                          INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
+                                                          AND Product.SupplierID = For_Sell.ProductSupplierID
+                                                      WHERE Type = ? 
+                                                      LIMIT ${offset}, ${listPerPage}`, [Type]);
       // const meta = { page };
 
-      return { data };
+      return new Promise((resolve, reject) =>
+        resolve({ data })
+      );
 
 
       // only have shopID
     } else if (!Type) {
-      const data = db.query(`SELECT  Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
-                            For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
-                            Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                        
-                            FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
-                            INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
-                                                AND Product.SupplierID = For_Sell.ProductSupplierID
-                            WHERE Shop.ShopID = ?
-                            LIMIT ?, ?`, [ShopID, offset, listPerPage]);
+      const [data, fields] = await connection.execute(`SELECT  Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
+                                                          For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
+                                                          Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                        
+                                                      FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
+                                                          INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
+                                                          AND Product.SupplierID = For_Sell.ProductSupplierID
+                                                      WHERE Shop.ShopID = ?
+                                                      LIMIT ${offset}, ${listPerPage}`, [ShopID]);
       const meta = { page };
-      return { data };
+      return new Promise((resolve, reject) =>
+        resolve({ data })
+      );
 
     } else {
-
-
-
-
-
-
-
-      const data = db.query(`SELECT  Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
-                            For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
-                            Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                        
-                            FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
-                            INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
-                                                AND Product.SupplierID = For_Sell.ProductSupplierID
-                            WHERE Type = ? AND Shop.ShopID = ?
-                            LIMIT ?, ?`, [Type, ShopID, offset, listPerPage]);
+      const [data, fields] = await connection.execute(`SELECT  Product.ProductID as ProductID, Product.SupplierID as SupplierID, 
+                                                          For_Sell.ShopID as ShopID, Product.Name as ProductName, Shop.Name as ShopName,
+                                                          Product.Type as Type, For_Sell.Num AS RemainNumber, For_Sell.Price as Price                        
+                                                      FROM Shop INNER JOIN For_Sell ON Shop.ShopID = For_Sell.ShopID 
+                                                          INNER JOIN Product ON Product.ProductID = For_Sell.ProductID 
+                                                          AND Product.SupplierID = For_Sell.ProductSupplierID
+                                                      WHERE Type = ? AND Shop.ShopID = ?
+                                                      LIMIT ${offset}, ${listPerPage}`, [Type, ShopID]);
       // const meta = { page };
-      return { data };
+      return new Promise((resolve, reject) =>
+        resolve({ data })
+      );
     }
   }
 
   // customer click Cart  
-  function clickCart(parameters) {
+  async function clickCart(parameters) {
     const { CustomerID } = parameters
-    const data = db.query(`SELECT Product.Name AS Name, Cart.ProductID, Cart.ProductSupplierID, Cart.Price AS Price, Cart.ShopID, Cart.Num AS NumberInCart, 
-                                  For_Sell.Num AS RemainNumber
-                            FROM Cart LEFT JOIN For_Sell ON For_Sell.ShopID = Cart.ShopID 
-                                  AND For_Sell.ProductSupplierID = Cart.ProductSupplierID
-                                  AND For_Sell.ProductID = Cart.ProductID 
-                                  LEFT JOIN Product ON Cart.ProductSupplierID = Product.SupplierID AND Cart.ProductID = Product.ProductID
-                            WHERE Cart.CustomerID = ?` , [CustomerID]);
-    return { data };
+    const [data, fields] = await connection.execute(`SELECT Product.Name AS Name, Cart.ProductID, Cart.ProductSupplierID, Cart.Price AS Price, Cart.ShopID, Cart.Num AS NumberInCart, 
+                                                        For_Sell.Num AS RemainNumber
+                                                    FROM Cart LEFT JOIN For_Sell ON For_Sell.ShopID = Cart.ShopID 
+                                                        AND For_Sell.ProductSupplierID = Cart.ProductSupplierID
+                                                        AND For_Sell.ProductID = Cart.ProductID 
+                                                        LEFT JOIN Product ON Cart.ProductSupplierID = Product.SupplierID AND Cart.ProductID = Product.ProductID
+                                                    WHERE Cart.CustomerID = ?` , [CustomerID]);
+    return new Promise((resolve, reject) =>
+      resolve({ data })
+    );
   }
 
   // add prouduct to cart 
-  function add(addObj) {
+  async function add(addObj) {
     const { CustomerID, ShopID, ProductSupplierID, ProductID } = addObj;
-    const mid = db.query(`SELECT ManagerID
+
+    await connection.beginTransaction();
+    try {
+      const [mid, fields] = await connection.execute(`SELECT ManagerID
                           FROM Shop 
                           WHERE ShopID = ?`, [ShopID]);
-    const price = db.query(`SELECT Price
+      const [price, fields1] = await connection.execute(`SELECT Price
                             FROM For_Sell
                             WHERE ShopID = ? AND ProductSupplierID = ? 
                             AND ProductID = ?`, [ShopID, ProductSupplierID, ProductID]);
 
-    // let object to string
-    var s = JSON.stringify(mid[0].ManagerID);
-    const ShopManagerID = JSON.parse(s);
+      // let object to string
+      var s = JSON.stringify(mid[0].ManagerID);
+      const ShopManagerID = JSON.parse(s);
+      // console.log(ShopManagerID)
 
-    var s = JSON.stringify(price[0].Price);
-    const Price = JSON.parse(s);
+      var s = JSON.stringify(price[0].Price);
+      const Price = JSON.parse(s);
+      // console.log(Price)
 
-    const res1 = db.query(`SELECT ShopID
+      const [res1, fields2] = await connection.execute(`SELECT ShopID
                             FROM Cart
-                            WHERE CustomerID = ? AND ShopManagerID = ? AND ProductSupplierID = ? AND ProductID = ?`, [CustomerID, ShopManagerID, ProductSupplierID, ProductID]);
-    // return res1[0];
-    if (res1[0] != undefined) {
-      let error = 'Product exist already.';
-      return { error };
-    }
-    const Num = 1;
-    const result = db.run(`INSERT INTO Cart (CustomerID, ShopManagerID, ShopID, ProductSupplierID, ProductID, Num, Price)
-                          VALUES (@CustomerID, @ShopManagerID, @ShopID, @ProductSupplierID, @ProductID, @Num, @Price)`
-      , { CustomerID, ShopManagerID, ShopID, ProductSupplierID, ProductID, Num, Price });
+                            WHERE CustomerID = ? AND ShopManagerID = ? AND ProductSupplierID = ? AND ProductID = ?`
+        , [CustomerID, ShopManagerID, ProductSupplierID, ProductID]);
 
-    let error = 'Error in adding product.';
-    if (result.changes) {
-      error = '';
-    }
+      // return res1[0];
+      if (res1[0] != undefined) {
+        let error = 'Product exist already.';
+        return new Promise((resolve, reject) =>
+          resolve({ error })
+        );
+      }
+      const Num = 1;
 
-    return { error };
+      const [result, fields3] = await connection.execute('INSERT INTO Cart (CustomerID, ShopManagerID, ShopID, ProductSupplierID, ProductID, Num, Price) VALUES (?, ?, ?, ?, ?, ?, ? )'
+        , [CustomerID, ShopManagerID, ShopID, ProductSupplierID, ProductID, Num, Price]);
+      await connection.commit();
+
+      return new Promise((resolve, reject) =>
+        resolve({ error: '' })
+      );
+    } catch (err) {
+      connection.rollback();
+      let error = 'Error in adding product.';
+      return new Promise((resolve, reject) =>
+        resolve({ error })
+      );
+    }
   }
 
   // delete cart  
-  function deleteCart(deleteObj) {
+  async function deleteCart(deleteObj) {
     const { CustomerID, ShopID, ProductSupplierID, ProductID } = deleteObj;
 
-    const result = db.run(` DELETE
+    const [result, fields] = await connection.execute(` DELETE
                             FROM Cart
-                            WHERE CustomerID = @CustomerID AND ShopID = @ShopID AND ProductSupplierID = @ProductSupplierID AND ProductID = @ProductID`,
-      { CustomerID, ShopID, ProductSupplierID, ProductID });
+                            WHERE CustomerID = ? AND ShopID = ? AND ProductSupplierID = ? AND ProductID = ?`,
+      [CustomerID, ShopID, ProductSupplierID, ProductID]);
+
 
     let error = 'Error in deleting product in cart.'
-    if (result.changes) {
+    if (result != undefined) {
       error = '';
     }
-    return { error };
+    return new Promise((resolve, reject) =>
+      resolve({ error })
+    );
   }
 
   // hisNumber 
-  function getHistoryNum(parameters) {
+  async function getHistoryNum(parameters) {
     const { CustomerID } = parameters
-    var numHid = db.query(` SELECT  COUNT(DISTINCT HistoryID) AS temp
+    var [numHid, fields] = await connection.execute(` SELECT  COUNT(DISTINCT HistoryID) AS temp
                             FROM  Trade_History 
                             WHERE CustomerID = ?` , [CustomerID]);
     var s = JSON.stringify(numHid[0].temp);
     numHid = JSON.parse(s);
 
-    return { numHid };
+    return new Promise((resolve, reject) =>
+      resolve({ numHid })
+    );
   }
 
   // history ( page : 1 ~ x ) 
-  function history(parameters) {
+  async function history(parameters) {
     const { CustomerID, page } = parameters
     // count HistoryID index
     const index = page - 1;
@@ -283,41 +316,54 @@ module.exports = function (connection) {
     // get HistoryID's number
     const numHid = getHistoryNum({ CustomerID: CustomerID });
 
-    // take specified HistoryID
-    const res = db.query(`  SELECT  distinct HistoryID
+    await connection.beginTransaction();
+    try {
+      // take specified HistoryID
+      const [res, fields] = await connection.execute(`  SELECT  distinct HistoryID
                             FROM  Trade_History 
                             WHERE CustomerID = ?
                             ORDER BY HistoryID DESC` , [CustomerID]);
-    const hid = res[index].HistoryID;
+      const hid = res[index].HistoryID;
 
-    // count totalPrice & get Time
-    var tp_time = db.query(`SELECT  SUM(Num * Price) AS tp, Time
+      // count totalPrice & get Time
+      var [tp_time, fields1] = await connection.execute(`SELECT  SUM(Num * Price) AS tp, DATE_FORMAT(Time, '%Y-%m-%d %H:%i:%s') as Time
                             FROM  Trade_History 
-                            WHERE CustomerID = ? AND HistoryID = ?` , [CustomerID, hid]);
-    var s = JSON.stringify(tp_time[0].tp);
-    var totalPrice = JSON.parse(s);
-    s = JSON.stringify(tp_time[0].Time);
-    var Time = JSON.parse(s);
+                            WHERE CustomerID = ? AND HistoryID = ?
+                            GROUP BY Time` , [CustomerID, hid]);
+      // console.log(tp_time)
+      var s = JSON.stringify(tp_time[0].tp);
+      var totalPrice = JSON.parse(s);
+      s = JSON.stringify(tp_time[0].Time);
+      var Time = JSON.parse(s);
 
-    const temp_data = db.query(`  SELECT Product.Name AS ProductName, Shop.Name AS ShopName, Num, Price
+      const [temp_data, fields2] = await connection.execute(`  SELECT Product.Name AS ProductName, Shop.Name AS ShopName, Num, Price
                                   FROM ( Trade_History LEFT JOIN Product ON Trade_History.ProductSupplierID = Product.SupplierID 
                                         AND Trade_History.ProductID = Product.ProductID ) LEFT JOIN Shop ON Trade_History.ShopID = Shop.ShopID
                                   WHERE CustomerID = ? AND HistoryID = ?` , [CustomerID, hid]);
+      // console.log(temp_data)
+      // creat the return data
+      var data = [];
+      var r = [];
+      r = (temp_data);
 
-    // creat the return data
-    var data = [];
-    var r = [];
-    r = (temp_data);
+      data.push({
+        HistoryID: hid,
+        Time: Time,
+        TotalPrice: totalPrice,
+        PurchaseHistory: r
+      });
 
-    data.push({
-      HistoryID: hid,
-      Time: Time,
-      TotalPrice: totalPrice,
-      PurchaseHistory: r
-    });
-
-
-    return { data };
+      await connection.commit();
+      return new Promise((resolve, reject) =>
+        resolve({ data })
+      );
+    } catch (err) {
+      connection.rollback();
+      let error = 'Error in history.';
+      return new Promise((resolve, reject) =>
+        resolve({ error })
+      );
+    }
   }
 
   // +(cart) 
@@ -418,7 +464,6 @@ module.exports = function (connection) {
 
   return {
     '/register/Customer': createNewCustomer,
-    // '/searchProduct': searchProduct,
     '/existCustomer': checkCustomer,
     '/getShopList': getShopList,
     '/getType': getType,
@@ -435,7 +480,6 @@ module.exports = function (connection) {
   }
 
 }
-
 
 
 
