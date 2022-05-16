@@ -41,10 +41,10 @@ module.exports = function (connection) {
   // }
 
   async function checkCustomer(parameters) {
-    const { CustomerID } = parameters
+    const { email } = parameters
     const [data, fields] = await connection.execute(`SELECT CustomerID 
                             FROM Customer 
-                            WHERE CustomerID = ?`, [CustomerID])
+                            WHERE CustomerID = ?`, [email])
     // console.log(data)
     return new Promise((resolve, reject) =>
       resolve({ exist: data.length > 0 })
@@ -314,7 +314,7 @@ module.exports = function (connection) {
     const index = page - 1;
 
     // get HistoryID's number
-    const numHid = getHistoryNum({ CustomerID: CustomerID });
+    // const numHid = await getHistoryNum({ CustomerID: CustomerID });
 
     await connection.beginTransaction();
     try {
@@ -367,96 +367,112 @@ module.exports = function (connection) {
   }
 
   // +(cart) 
-  function addProductNumInCart(data) {
+  async function addProductNumInCart(data) {
     const { CustomerID, ShopID, ProductSupplierID, ProductID } = data;
 
-    const result = db.run(` UPDATE Cart
+    const [result, fields] = await connection.execute(` UPDATE Cart
                             SET Num = ( Num + 1 )
-                            WHERE CustomerID = @CustomerID AND ShopID = @ShopID AND ProductSupplierID = @ProductSupplierID 
-                            AND ProductID = @ProductID`, { CustomerID, ShopID, ProductSupplierID, ProductID });
+                            WHERE CustomerID = ? AND ShopID = ? AND ProductSupplierID = ? 
+                            AND ProductID = ?`, [CustomerID, ShopID, ProductSupplierID, ProductID]);
 
     let error = 'Error in increasing number of product.';
-    if (result.changes) {
+    if (result != undefined) {
       error = '';
     }
-
-    return { error };
+    return new Promise((resolve, reject) =>
+      resolve({ error })
+    );
   }
 
   // -(cart) 
-  function subtractProductNumInCart(data) {
+  async function subtractProductNumInCart(data) {
     const { CustomerID, ShopID, ProductSupplierID, ProductID } = data;
 
-    const result = db.run(` UPDATE Cart
+    const [result, fields] = await connection.execute(` UPDATE Cart
                             SET Num = ( Num - 1 )
-                            WHERE CustomerID = @CustomerID AND ShopID = @ShopID AND ProductSupplierID = @ProductSupplierID 
-                            AND ProductID = @ProductID`, { CustomerID, ShopID, ProductSupplierID, ProductID });
+                            WHERE CustomerID = ? AND ShopID = ? AND ProductSupplierID = ? 
+                            AND ProductID = ?`, [CustomerID, ShopID, ProductSupplierID, ProductID]);
 
     let error = 'Error in decreasing number of product.';
-    if (result.changes) {
+    if (result != undefined) {
       error = '';
     }
-
-    return { error };
+    return new Promise((resolve, reject) =>
+      resolve({ error })
+    );
   }
 
   // buy 
-  function buy(data) {
+  async function buy(data) {
     const { CustomerID } = data;
     let error = 'You have nothing in your cart.';
 
-    // take all the products of this customer in cart 
-    const res1 = db.query(` SELECT *
+    await connection.beginTransaction();
+    try {
+      // take all the products of this customer in cart 
+      const [res1, fields] = await connection.execute(` SELECT *
                             FROM Cart 
                             WHERE CustomerID = ?` , [CustomerID]);
-    if (res1.length == 0) {
-      return { error };
-    }
+      if (res1.length == 0) {
+        return { error };
+      }
 
-    // find max hid
-    var h = db.query(`SELECT MAX(HistoryID) as hh
-                      FROM Trade_History `, []);
-    var s = JSON.stringify(h[0].hh);
-    var hid = JSON.parse(s);
-    hid = hid + 1;
+      // find max hid
+      var [h, fields1] = await connection.execute(`SELECT MAX(HistoryID) as hh
+                                                  FROM Trade_History `, []);
+      var s = JSON.stringify(h[0].hh);
+      var hid = JSON.parse(s);
+      hid = hid + 1;
 
-    for (i = 0; i < res1.length; i++) {
-      cid = res1[i].CustomerID;
-      mid = res1[i].ShopManagerID;
-      shopid = res1[i].ShopID;
-      supplierid = res1[i].ProductSupplierID;
-      pid = res1[i].ProductID;
-      num = res1[i].Num;
-      price = res1[i].Price;
+      for (i = 0; i < res1.length; i++) {
+        cid = res1[i].CustomerID;
+        mid = res1[i].ShopManagerID;
+        shopid = res1[i].ShopID;
+        supplierid = res1[i].ProductSupplierID;
+        pid = res1[i].ProductID;
+        num = res1[i].Num;
+        price = res1[i].Price;
 
 
-      // add to Trade History
-      const result = db.run(` INSERT INTO Trade_History (CustomerID, ShopManagerID, ShopID, ProductSupplierID, ProductID,  HistoryID, Num, Price)
-                              VALUES (@cid, @mid, @shopid, @supplierid, @pid, @hid, @num, @price)`,
-        { cid, mid, shopid, supplierid, pid, hid, num, price });
+        // add to Trade History
+        await connection.execute(` INSERT INTO Trade_History (CustomerID, ShopManagerID, ShopID, ProductSupplierID, ProductID,  HistoryID, Num, Price)
+                              VALUES (?,?,?,?,?,?,?,?)`,
+          [cid, mid, shopid, supplierid, pid, hid, num, price]);
 
-      // delete data in cart
-      db.run(`DELETE
+        // delete data in cart
+        await connection.execute(`DELETE
               FROM Cart
-              WHERE CustomerID = @cid AND ShopID = @shopid AND ProductSupplierID = @supplierid AND ProductID = @pid`,
-        { cid, shopid, supplierid, pid });
+              WHERE CustomerID = ? AND ShopID = ? AND ProductSupplierID = ? AND ProductID = ?`,
+          [cid, shopid, supplierid, pid]);
 
-      // update for_sell.num
-      db.run(`UPDATE For_Sell
-              SET Num = (Num - @num)
-              WHERE  ShopID = @shopid AND ProductSupplierID = @supplierid 
-              AND ProductID = @pid`, { num, shopid, supplierid, pid });
+        // update for_sell.num
+        await connection.execute(`UPDATE For_Sell
+              SET Num = (Num - ?)
+              WHERE  ShopID = ? AND ProductSupplierID = ? 
+              AND ProductID = ?`, [num, shopid, supplierid, pid]);
 
-      // update shop.totalRevenue
-      db.run(`UPDATE Shop
-              SET TotalRevenue = (TotalRevenue + (@num * @price) )
-              WHERE  ShopID = @shopid `, { num, price, shopid });
+        // update shop.totalRevenue
+        await connection.execute(`UPDATE Shop
+              SET TotalRevenue = (TotalRevenue + (? * ?) )
+              WHERE  ShopID = ? `, [num, price, shopid]);
 
 
 
+      }
+      await connection.commit();
+      error = '';
+      return new Promise((resolve, reject) =>
+        resolve({ error })
+      );
+
+    } catch (err) {
+
+      connection.rollback();
+      let error = 'Error in buying product.';
+      return new Promise((resolve, reject) =>
+        resolve({ error })
+      );
     }
-    error = '';
-    return { error };
 
   }
 
