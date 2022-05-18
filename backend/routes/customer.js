@@ -9,19 +9,19 @@ module.exports = function (globalVariables) {
   const shard = globalVariables.shard
 
   // original mark/searchProduct
-  router.get('/searchProduct', async function (req, res, next) {
-    try {
-      //res.json(mark.searchProduct(req.query.shopID, req.query.type ,req.query.page));
+  // router.get('/searchProduct', async function (req, res, next) {
+  //   try {
+  //     //res.json(mark.searchProduct(req.query.shopID, req.query.type ,req.query.page));
 
-      let keyNum = Math.floor(Math.random() * 2) % 2
-      let result = await shard(keyNum, '/searchProduct', { shopID: req.query.shopID, type: req.query.type, page: req.query.page })
-      res.json(result)
+  //     let keyNum = Math.floor(Math.random() * 2) % 2
+  //     let result = await shard(keyNum, '/searchProduct', { shopID: req.query.shopID, type: req.query.type, page: req.query.page })
+  //     res.json(result)
 
-    } catch (err) {
-      console.error(`Error while getting product `, err.message);
-      next(err);
-    }
-  });
+  //   } catch (err) {
+  //     console.error(`Error while getting product `, err.message);
+  //     next(err);
+  //   }
+  // });
 
   //original mark/register/Customer
   router.post('/register/Customer', async function (req, res, next) {

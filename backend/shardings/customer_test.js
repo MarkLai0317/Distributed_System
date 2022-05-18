@@ -17,9 +17,12 @@ const customer_ = require('../services/customer.js');
   }
 
   //參數自己寫
-  parameters = { 'CustomerID': '108703029@nccu.edu.tw' }
-  // parameters = { 'CustomerID': 'test1', 'Name': 'test', 'PhoneNum': 'test' }
-  // parameters = {}
+  parameters = { 'CustomerID': 'test' }
+  // parameters = { 'CustomerID': 'test', 'Name': 'test', 'PhoneNum': 'test' }
+  // parameters = { ShopID: 90, Type: 'fruit' }
+  // parameters = { Type: 'fruit', page: 1 }
+  // parameters = { CustomerID: '108703029@nccu.edu.tw', ShopID: 94, ProductSupplierID: 72, ProductID: 83 }
+  // requestHandler('/add', 111, parameters)
   requestHandler('/existCustomer', 111, parameters)
 
 })()
