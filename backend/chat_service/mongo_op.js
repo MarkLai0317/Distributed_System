@@ -69,3 +69,5 @@ async function delMsg(from, to, msg, date){ //deleting message from mongodb
 }
 
 // delMsg("91", "shop01", "Hello", "12345678")
+
+export default { saveMsg }
