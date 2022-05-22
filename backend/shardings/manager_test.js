@@ -17,6 +17,7 @@ const manager_ = require('../services/manager.js');
   }
 
   //參數自己寫
-  requestHandler(serviceId, transactionId, parameters)
+  parameters = {'ManagerID':'108703043@nccu.edu.tw'}
+  requestHandler('/GetForsale',111, parameters)
 
 })()
