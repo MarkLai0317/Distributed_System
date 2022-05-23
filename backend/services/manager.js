@@ -58,7 +58,7 @@ module.exports = function (connection) {
       const ShopID = JSON.parse(t);
 
       // find max orderHistoryID
-      var [o,fields1] = db.query(`SELECT MAX(OrderHistoryID) as oo
+      var [o,fields1] = await connection.execute(`SELECT MAX(OrderHistoryID) as oo
                       FROM Order_History `, []);
       var s = JSON.stringify(o[0].oo);
       var OrderHistoryID = JSON.parse(s);
@@ -76,7 +76,7 @@ module.exports = function (connection) {
                             WHERE StoreHouseID = ? AND ShopManagerID = ? AND ProductSupplierID = ? AND
                             ProductID = ? ` , [StoreHouseID, ShopManagerID, ProductSupplierID, ProductID]);
 
-      let error = 'Error in updating forSale product number.';
+      let error = 'Error in orderButton.';
       if (res.length == 0) {
         const [r,fields3] = await connection.execute(`INSERT INTO Have (StoreHouseID, ShopManagerID, ShopID, ProductSupplierID, ProductID, Num)
                         VALUES (?,?,?,?,?,?)`,
@@ -152,27 +152,26 @@ module.exports = function (connection) {
                       WHERE ManagerID = ?`, [ShopManagerID]);
       var t = JSON.stringify(s[0].ShopID);
       const ShopID = JSON.parse(t);
-
+      
       // check whether this product is forSell or not
       var [r,fields1] = await connection.execute(`SELECT *
                         FROM For_Sell 
                         WHERE ShopManagerID = ? AND ProductSupplierID = ? AND ProductID = ? `
         , [ShopManagerID, ProductSupplierID, ProductID]);
 
-      
+        
 
       // if r.length == 0 insert product, else update For_Sell num
       if (r.length == 0) {
         const [t,fields2] = await connection.execute(`INSERT INTO For_Sell (ShopManagerID, ShopID, ProductSupplierID, ProductID, Price, Num)
                         VALUES (?,?,?,?,?,?)`,
           [ ShopManagerID, ShopID, ProductSupplierID, ProductID, Price, Num ]);
-
         if (t!=undefined) {
           error = ''
         }
       } else {
         const [result,fields3] = await connection.execute(` UPDATE For_Sell
-                              SET Num = @Num + Num
+                              SET Num = ? + Num
                               WHERE ShopManagerID = ? AND ProductSupplierID = ?
                                     AND ProductID = ?`, [ Num, ShopManagerID, ProductSupplierID, ProductID ]);
 
@@ -184,7 +183,7 @@ module.exports = function (connection) {
 
       // decrease Have Num 
       await connection.execute(`UPDATE Have
-            SET Num = Num - @Num
+            SET Num = Num - ?
             WHERE StoreHouseID = ? AND ShopManagerID = ? AND ProductSupplierID = ?
             AND ProductID = ?`, [ Num, StoreHouseID, ShopManagerID, ProductSupplierID, ProductID ]);
       await connection.commit();    
@@ -331,6 +330,7 @@ module.exports = function (connection) {
     const { Email, Name, PhoneNum, ShopName } = data;
     await connection.beginTransaction();
     try{
+      let message = 'Manager created successfully';
       const [count, fields] = await connection.execute(`select * from Manager `, []);
       const [shopp,fields1] = await connection.execute(`select * from Shop`, []);
       for (i = 0; i < count.length; i++) {
@@ -438,7 +438,7 @@ module.exports = function (connection) {
     '/Revenue': Revenue,//ok
     '/TradeHistory': TradeHistory,//ok
     '/Shop': Shop,//ok
-    '/Order_History': OrderHistory,//ok
+    '/OrderHistory': OrderHistory,//ok
     '/Order': Order,//ok
     '/GetStoreHouseID': GetStoreHouseID,     //ok
     '/GetHave': GetHave,             //ok 
