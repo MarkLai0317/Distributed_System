@@ -427,7 +427,7 @@ module.exports = function (connection) {
 
   }
 
-  module.exports = {
+  return {
     '/register/Manager': CreateNewManager,
     '/existManager': checkManager,//ok
     '/orderButton': orderButton,//ok
