@@ -16,7 +16,7 @@ client.on('connect', function () {
 
 function test(){
     console.log("pub")
-    client.publish('91', 'Hello')
+    client.publish('/chat/91', "hello")
 }
 
 test()
