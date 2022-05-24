@@ -29,5 +29,5 @@ client.on('message', function (topic, msg) {
     //     "timestamp" : "UTC 1234"
     // }
 
-    // saveMsg(msg.from, msg.to, msg.msg, msg.timestamp)
+    saveMsg(msg.from, msg.to, msg.msg, msg.timestamp)
 })
