@@ -8,7 +8,7 @@ const manager_ = require('../services/manager.js');
 
 
   var mysql = require('mysql2/promise');
-  var connection = await this.mysql.createConnection(database_config)
+  var connection = await mysql.createConnection(database_config)
 
   const manager = manager_(connection);
 
