@@ -71,9 +71,9 @@ app.get('/', (req, res) => {
 //app.use('/mark', markRouter({shard: shard}));
 
 app.use('/customer', customerRouter({shard:shard}))
-// app.use('/manager', managerRouter({shard:shard}))
-//app.use('/chat', chatRouter({shard: shard}))
-app.use('/chat', testChatRouter)
+app.use('/manager', managerRouter({shard:shard}))
+// app.use('/chat', chatRouter({shard: shard}))
+app.use('/chat', testChatRouter({shard:shard}))
 
 
 app.listen(port, () => {
