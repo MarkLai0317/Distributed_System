@@ -84,7 +84,7 @@ export default {
   methods: {
     getForSaleTable(){
       console.log("get forSale")
-      this.axios.get('http://127.0.0.1:9000/ni/GetForsale', {
+      this.axios.get('http://127.0.0.1:9000/manager/GetForsale', {
         params: {
           ManagerID: this.firebase.auth().currentUser.email
         }
