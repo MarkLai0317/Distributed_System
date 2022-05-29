@@ -104,7 +104,7 @@ module.exports = function (globalVariables) {
   router.get('/clickCart', async function (req, res, next) {
     try {
       let keyNum = Math.floor(Math.random() * 2) % 2
-      let result = await shard(keyNum, '/maxPage', { CustomerID: req.query.CustomerID })
+      let result = await shard(keyNum, '/clickCart', { CustomerID: req.query.CustomerID })
       res.json(result);
     } catch (err) {
       console.error(`Error while getting product `, err.message);
