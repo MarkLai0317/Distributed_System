@@ -1,81 +1,286 @@
 <template>
+<div>
+    <h4>Select Type: </h4>
+    <el-select v-model="TypeValue" placeholder="Select Type" @change="selectType">
+      <el-option
+        v-for="item in TypeOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
 
-  <h1>Order History</h1>
-  <input type="button" @click="add()" />
+    <!-- <td nowrap>select shop: </td> -->
+    <h4>Select Shop</h4>
+    <el-select v-model="ShopValue" placeholder="Select Type" @change="selectShop">
+      <el-option
+        v-for="item in ShopOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
 
-  <div class="table">
-    <el-table :data="curPage" style="width: 100%">
+  <el-table :data="currentPage" style="width: 100%" align="center">
     
-        <el-table-column  prop="oid" label="Order ID"  align="center" />
-        <el-table-column  prop="time" label="Time"  align="center" />
-        <el-table-column  prop="product" label="Product"  align="center" />
-        <el-table-column  prop="number" label="Number"  align="center" />
-        <el-table-column prop="supplier" label="Supplier" align="center" />
-    
-    </el-table>
-  </div>
+    <el-table-column prop="ProductName" label="Product" width="150" align="center"/>
+    <el-table-column prop="ShopName" label="Shop" width="150" align="center"/>
+    <el-table-column prop="RemainNumber" label="Remain" width="150" align="center"/>
+    <el-table-column prop="Price" label="Price" width="150" align="center"/>
+    <el-table-column prop="Type" label="Type" width="150" align="center"/>
+    <!-- -->
+    <el-table-column width="150" align="center">
+      <template #default="scope" >
+        <el-button
+          size="mini"
+          :disabled="scope.row.RemainNumber<1?true:false"
+          @click="pressAdd(scope.$index, scope.row)">Add</el-button>
+      </template>
+    </el-table-column>
+    <!-- -->
 
-  <div class="block">
-    <el-pagination layout="prev, pager, next" :total="this.tableData.length" @current-change="setpage" :page-size="pageSize"> </el-pagination>
-  </div>
-
+  </el-table>
+  <el-pagination
+    background
+    layout="prev, pager, next"
+    :page-size="pageSize"
+    :total=maxPage
+    @current-change="getPage">
+  </el-pagination>
+  <!-- test button -->
+     
+</div>
 </template>
 
-<script>
+<script >
 export default {
   data() {
     return {
-      tableData: [
-        {
-          oid: '0',
-          time: '2021',
-          product: 'test',
-          number: '1',
-          supplier:'jojo'
-        },
-      ],
-      page:1,
-      pageSize:5,
+      page: 1,
+      maxPage: 50,
+      pageSize: 10,
+      currentType: '',
+      currentShopName: '', 
+      currentPage: [],
+      TypeValue: '',
+      ShopValue: '',
+      // api
+      TypeOptions: [{
+          value: '',
+          label: 'all'
+        }],
+      ShopOptions: [{
+          value: '',
+          label: 'all'
+        },]
     }
   },
-  computed:{
-    curPage(){
-      return this.tableData.slice(this.pageSize*this.page-this.pageSize,this.pageSize*this.page)
-    }
+  created(){
+    this.getPage(1),
+    this.getMaxPage(),
+    this.getAllType(),
+    this.getAllShopID(),
+    this.testClickCart(),
+    this.testHistory()
   },
-  methods:{
-    add(){
-      this.tableData.push({
-        oid: '0',
-        time: '2021',
-        product: 'test',
-        number: '1',
-        supplier:'jojo'
-      },)
+  methods: {
+    // get the current page
+    getPage(val) {
+
+      this.page = val
+      //get 寫法
+      this.axios.get('http://127.0.0.1:9000/customer/searchProduct', {
+        params: {
+          //get 參數放這裡
+          ShopID: this.currentShopName, // ShopName ---
+          Type: this.currentType,
+          page: val
+        }
+      })
+      .then(response=> {//  get 回來的 資料 處理
+        let res = JSON.stringify(response.data); // 先 變字串
+        let resobj = JSON.parse(res) // 再變 object
+        this.currentPage = resobj.data
+        // 就可以做其他處理 像存到data 裡面
+        console.log(resobj.data)
+        console.log(val)
+      
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .then(function () {
+        // always executed
+      })
     },
-    setpage(val){
-      console.log(val)
-      this.page=val
+    //////
+    pressAdd(index,row) {
+      console.log(index)
+      console.log(row)
+      this.axios.post('http://127.0.0.1:9000/customer/add', {
+        // post 參數放這裡
+        CustomerID: this.firebase.auth().currentUser.email,
+        ShopID: row.ShopID,
+        ProductSupplierID: row.SupplierID,
+        ProductID: row.ProductID
+      })
+      .then(response => {// 回傳的 response 處理
+        console.log(response);
+        let res = JSON.stringify(response.data); // 先 變字串
+        let resobj = JSON.parse(res) 
+        if(resobj.error){
+          this.error = resobj.error
+        }
+        else{
+          console.log('add succeed!')
+        }
+
+      })
+      .catch(error => {
+        console.log(error)
+        this.error = 'register fail'
+        console.log(this.page)
+      });
+    },
+    ////
+    selectType(val){
+      this.currentType = val
+      this.getPage(this.page)
+      this.getMaxPage()
+    },
+    selectShop(val){
+      this.currentShopName = val
+      this.getPage(this.page)
+      this.getMaxPage()
+    },
+    // get the total number of pages 
+    getMaxPage(){
+      this.axios.get('http://127.0.0.1:9000/customer/maxPage', {
+        params: {
+          //get 參數
+          ShopID: this.currentShopName, 
+          Type: this.currentType,
+        }
+      })
+      .then(response=> {
+        let res = JSON.stringify(response.data); 
+        let resobj = JSON.parse(res)
+        console.log(resobj)
+        this.maxPage = (resobj.page*10)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .then(function () {
+        // always executed
+      })
+
+    },
+    getAllType(){
+      this.axios.get('http://127.0.0.1:9000/customer/getType', {
+        params: {
+          // no parameters
+        }
+      })
+      .then(response=> {
+        let res = JSON.stringify(response.data); 
+        let resobj = JSON.parse(res)
+        let arr = resobj.data
+        console.log(arr)
+        for(var i=0;i<arr.length;++i){
+          this.TypeOptions.push({ value: arr[i].Type, label:arr[i].Type })
+        }
+
+        
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .then(function () {
+        // always executed
+      })
+    },
+    getAllShopID(){
+      this.axios.get('http://127.0.0.1:9000/customer/getShopList', {
+        params: {
+          // no parameters
+        }
+      })
+      .then(response=> {
+        let res = JSON.stringify(response.data); 
+        let resobj = JSON.parse(res)
+        let arr = resobj.data
+        console.log(arr)
+        for(var i=0;i<arr.length;++i){
+          this.ShopOptions.push({ value: arr[i].ShopID, label: arr[i].ShopName })
+        }
+        
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      .then(function () {
+        // always executed
+      })
+    },
+    testClickCart() {
+        this.axios.get('http://127.0.0.1:9000/customer/clickCart', {
+        params: {
+          //get 參數放這裡
+          CustomerID: this.firebase.auth().currentUser.email ,
+          
+        }
+      })
+      .then(response=> {//  get 回來的 資料 處理
+        let res = JSON.stringify(response.data); // 先變字串
+        // let resobj = JSON.parse(res) // 再變 object
+        // this.tableData = resobj.data
+        // 就可以做其他處理 像存到data 裡面
+        console.log("getCartInformation: ", res, response)
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    },
+    testHistory(){
+      this.axios.get('http://127.0.0.1:9000/customer/history', {
+          params: {
+            //get 參數放這裡
+            CustomerID: this.CustomerID,
+            page: this.page,
+          }
+        })
+        .then(response=> {//  get 回來的 資料 處理
+          let res = JSON.stringify(response.data); // 先變字串
+          let resobj = JSON.parse(res) // 再變 object
+          console.log("history:",response, res, resobj)
+          /*
+          this.table = resobj
+          // 就可以做其他處理 像存到data 裡面
+          // Date and Oid
+          this.order.Date = resobj.data[0].Time.split(' ')[0];
+          this.order.Oid = resobj.data[0].HistoryID;
+          this.order.Price = resobj.data[0].TotalPrice;
+          // table data
+          this.table = resobj.data[0].PurchaseHistory;
+          */
+        })
+        .catch(error => {
+          console.log("get data failed: ",error);
+        })
+        .then(function () {
+          // always executed
+        })
     }
+
+
+    
+  },
+  computed: {
+    
   }
 }
 </script>
-
-
-<style>
-.el-table-column{
-  left:0;
-  right:0;
-}
-h1{
-  color: brown;
-  /*
-  position:absolute;
-  top:0;
-  bottom:0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  */
-}
+<style lang="">
+  
 </style>
