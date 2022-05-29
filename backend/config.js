@@ -12,7 +12,7 @@ const config = {
   database_config:{
     host: env.HOST || 'localhost',
     user: 'root',
-    password: env.PASSWORD || 'h941i6tl',
+    password: env.PASSWORD || '[your password]',
     database: env.DATABASE || 'relation'
   }
 }
