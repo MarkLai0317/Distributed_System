@@ -57,9 +57,10 @@
         })
       },
       getHistoryMsg(){
-          this.axios.get('http://127.0.0.1:9000/msg/getHistory', {
+          this.axios.get('http://127.0.0.1:9000/chat/getHistory', {
           params: {
-            UserId: this.firebase.auth().currentUser.email
+            // UserId: this.firebase.auth().currentUser.email
+            UserId: "90"
           }
         })
         .then(response=> {

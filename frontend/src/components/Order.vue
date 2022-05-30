@@ -84,7 +84,7 @@ export default {
     },
     getStoreHouse(mid) {
       this.axios
-        .get("http://127.0.0.1:9000/ni/GetStoreHouseID", {
+        .get("http://127.0.0.1:9000/manager/GetStoreHouseID", {
           params: {
             ManagerID: mid,
           },
@@ -128,7 +128,7 @@ export default {
 
       //post 寫法
       this.axios
-        .post("http://127.0.0.1:9000/nn/orderButton", {
+        .post("http://127.0.0.1:9000/manager/orderButton", {
           // post 參數放這裡
           StoreHouseID: StoreHouseID,
           ShopManagerID: ShopManagerID,
@@ -163,7 +163,7 @@ export default {
   created() {
     //get all product
     this.axios
-      .get("http://127.0.0.1:9000/ni/Order", {
+      .get("http://127.0.0.1:9000/manager/Order", {
         params: {
           // no params
         },
@@ -188,7 +188,7 @@ export default {
       });
     //---------
     this.axios
-      .get("http://127.0.0.1:9000/ni/GetStoreHouseID", {
+      .get("http://127.0.0.1:9000/manager/GetStoreHouseID", {
         params: {
           ManagerID: this.firebase.auth().currentUser.email,
         },

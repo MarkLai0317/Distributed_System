@@ -105,7 +105,7 @@ export default {
     },
     getHaveTable(){
       console.log("get Have")
-      this.axios.get('http://127.0.0.1:9000/ni/GetHave', {
+      this.axios.get('http://127.0.0.1:9000/manager/GetHave', {
         params: {
           ManagerID: this.firebase.auth().currentUser.email
         }
@@ -158,7 +158,7 @@ export default {
     ///////////
     changePrice(row) {
 
-      this.axios.post('http://127.0.0.1:9000/ni/PriceChange', {
+      this.axios.post('http://127.0.0.1:9000/manager/PriceChange', {
         // post 參數放這裡
         ManagerID: this.firebase.auth().currentUser.email,
         Price: row.Price,
@@ -187,7 +187,7 @@ export default {
     handleAdd(index, row) {
       console.log(index, row);
       
-      this.axios.post('http://127.0.0.1:9000/nn/forSell', {
+      this.axios.post('http://127.0.0.1:9000/manager/forSell', {
         // post 參數放這裡
         StoreHouseID: row.StoreHouseID,
         ShopManagerID: this.firebase.auth().currentUser.email,
