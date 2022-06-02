@@ -1,18 +1,38 @@
 <template>
-  <el-table
-    ref="singleTable"
-    :data="ShopList"
-    highlight-current-row
-    @current-change="handleCurrentChange"
-    max-height="1000"
-    style="width: 30%">
-    <el-table-column
-      property="ShopName"
-      label="Shops"
-      width="120">
-    </el-table-column>
-  </el-table>
-  
+  <el-container>
+    <el-header>
+      <h2>Chat Room</h2>
+    </el-header> 
+    <el-container>
+
+      <el-aside>
+        <el-table
+          ref="singleTable"
+          :data="ShopList"
+          highlight-current-row
+          @current-change="handleCurrentChange"
+          max-height="1000"
+          style="width: 30%">
+          <el-table-column
+            property="ShopName"
+            label="Shops"
+            width="120">
+          </el-table-column>
+        </el-table>
+      </el-aside>
+
+      <el-main>
+        <p v-for="msg in CurrentMsg" 
+        v-bind:key="msg.id"
+        align = "left">
+        {{msg.From}}:{{msg.Msg}}
+        </p>
+      </el-main>
+      
+    </el-container> 
+
+    
+  </el-container>
 </template>
 
 <script>
@@ -28,10 +48,12 @@
 
     methods: {
       handleCurrentChange(val) {
+        // !! this is currently hard coded due to some uncertainty
         this.CurrentRow = val;
-        console.log(this.CurrentRow);
-        this.CurrentMsg = this.HistoryMsg[val.ShopID];
-        console.log(this.CurrentMsg);
+        console.log("val,this.CurrentRow", this.CurrentRow);
+        console.log(val.ShopID);
+        this.CurrentMsg = this.HistoryMsg["shop"+val.ShopID];
+        console.log("currentMsg", this.CurrentMsg);
       },
       getAllShopID(){
         this.axios.get('http://127.0.0.1:9000/customer/getShopList', {
