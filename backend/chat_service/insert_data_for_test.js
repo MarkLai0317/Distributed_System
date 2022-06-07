@@ -4,7 +4,6 @@ var MongoClient = require('mongodb').MongoClient;
 MongoClient.connect("mongodb://localhost:27017",function(err, client){
  
     if(err) throw err;
-   //Write databse Insert/Update/Query code here..
  
     const db = client.db('dis_sys')
 

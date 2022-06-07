@@ -20,7 +20,11 @@
     "express": "^4.17.1",
     "mongodb": "^4.5.0",
     "mqtt": "^4.3.7",
+<<<<<<< HEAD
     "websocket": "^1.0.34",
     "websocket-stream": "^5.5.2"
+=======
+    "mysql2": "^2.3.3"
+>>>>>>> b3b72aa6be10aa08839bf61052a81c32c37efae5
   }
 }

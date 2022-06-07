@@ -39,12 +39,10 @@ aedes.on("subscribe", (subscriptions, client) => {
 
 // handle publish
 aedes.on("publish", (packet, client) => {
-	// const topic = packet.topic;
-	// try {
-	// 	const msg = JSON.parse(packet.payload.toString());
-	// } catch (err) {
-	// 	console.log(err);
-	// }
+	// print out the message
+	if(client == null)
+		client = { id: '' }
+	console.log(client.id, " publish on ", packet.topic, ": ", packet.payload.toString());
 });
 // msg published should be a JSON object:
 // {

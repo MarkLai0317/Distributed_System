@@ -3,26 +3,35 @@
     <el-header>
       <span>Chat Room</span>
     </el-header> 
-    <!-- 
-    <el-aside>
-      <el-table
-        ref="singleTable"
-        :data="ShopList"
-        highlight-current-row
-        @current-change="handleCurrentChange"
-        max-height="1000"
-        style="width: 30%">
-        <el-table-column
-          property="ShopName"
-          label="Shops"
-          width="120">
-        </el-table-column>
-      </el-table>
-    </el-aside>
--->
-    <el-main>
-      <span>hello</span>
-    </el-main>
+    <el-container>
+
+      <el-aside>
+        <el-table
+          ref="singleTable"
+          :data="ShopList"
+          highlight-current-row
+          @current-change="handleCurrentChange"
+          max-height="1000"
+          style="width: 30%">
+          <el-table-column
+            property="ShopName"
+            label="Shops"
+            width="120">
+          </el-table-column>
+        </el-table>
+      </el-aside>
+
+      <el-main>
+        <h5 v-for="msg in CurrentMsg" 
+        v-bind:key="msg.id"
+        align = "left">
+        {{msg.From}}:{{msg.Msg}}
+        </h5>
+      </el-main>
+      
+    </el-container> 
+
+    
   </el-container>
 </template>
 
@@ -39,10 +48,12 @@
 
     methods: {
       handleCurrentChange(val) {
+        // !! this is currently hard coded due to some uncertainty
         this.CurrentRow = val;
-        console.log(this.CurrentRow);
-        this.CurrentMsg = this.HistoryMsg[val.ShopID];
-        console.log(this.CurrentMsg);
+        console.log("val,this.CurrentRow", this.CurrentRow);
+        console.log(val.ShopID);
+        this.CurrentMsg = this.HistoryMsg["shop"+val.ShopID];
+        console.log("currentMsg", this.CurrentMsg);
       },
       getAllShopID(){
         this.axios.get('http://127.0.0.1:9000/customer/getShopList', {
@@ -68,9 +79,10 @@
         })
       },
       getHistoryMsg(){
-          this.axios.get('http://127.0.0.1:9000/msg/getHistory', {
+          this.axios.get('http://127.0.0.1:9000/chat/getHistory', {
           params: {
-            UserId: this.firebase.auth().currentUser.email
+            // UserId: this.firebase.auth().currentUser.email
+            UserId: "90"
           }
         })
         .then(response=> {

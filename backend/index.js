@@ -6,10 +6,9 @@ const port = 9000 || process.env.PORT;
 //const markRouter = require('./routes/mark');
 
 const customerRouter = require('./routes/customer.js')
-// const managerRouter = require('./routes/manager.js')
-// const chatRouter = require('./routes/chat.js')
-// const nnRouter = require('./routes/nn');
-// const niRouter = require('./routes/ni');
+
+const managerRouter = require('./routes/manager.js')
+const chatRouter = require('./routes/chat.js')
 const testChatRouter = require('./routes/test_chat.js')
 
 
@@ -72,11 +71,10 @@ app.get('/', (req, res) => {
 //app.use('/mark', markRouter({shard: shard}));
 
 app.use('/customer', customerRouter({shard:shard}))
-// app.use('/manager', managerRouter({shard:shard}))
-//app.use('/chat', chatRouter({shard: shard}))
-app.use('/msg', testChatRouter({shard:shard}))
-// app.use('/nn', nnRouter);
-// app.use('/ni', niRouter);
+app.use('/manager', managerRouter({shard:shard}))
+// app.use('/chat', chatRouter({shard: shard}))
+app.use('/chat', testChatRouter({shard:shard}))
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

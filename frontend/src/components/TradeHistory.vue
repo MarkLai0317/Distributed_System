@@ -39,7 +39,7 @@ export default {
     getSensorData() {
 
       //get 寫法
-        this.axios.get('http://127.0.0.1:9000/ni/TradeHistory', {
+        this.axios.get('http://127.0.0.1:9000/manager/TradeHistory', {
         params: {
           //get 參數放這裡
           ManagerID: this.firebase.auth().currentUser.email,

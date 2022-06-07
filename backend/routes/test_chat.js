@@ -18,5 +18,17 @@ module.exports = function (globalVariables) {
 			next(err);
 		}
 	});
+
+	router.post("/register", async function (req, res, next) {
+		try{
+			const SHARD_KEY = 3;
+			let result = await shard(SHARD_KEY, "/register", req.body);
+			res.json(result);
+		} catch (err) {
+			console.error(`Error while adding customer `, err.message);
+			next(err);
+		}
+	});
+
 	return router;
 };

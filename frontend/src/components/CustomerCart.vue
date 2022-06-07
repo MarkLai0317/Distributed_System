@@ -84,7 +84,7 @@ export default {
     },
     toggleMinus(row) {
         
-          this.axios.post("http://127.0.0.1:9000/nn/subtractProductNumInCart", {
+          this.axios.post("http://127.0.0.1:9000/customer/subtractProductNumInCart", {
             // post 參數放這裡
             CustomerID: this.firebase.auth().currentUser.email,
             ShopID: row.ShopID,
@@ -112,7 +112,7 @@ export default {
     },
     toggleAdd(row) {
         
-          this.axios.post("http://127.0.0.1:9000/nn/addProductNumInCart", {
+          this.axios.post("http://127.0.0.1:9000/customer/addProductNumInCart", {
             // post 參數放這裡
             CustomerID: this.firebase.auth().currentUser.email,
             ShopID: row.ShopID,
@@ -140,7 +140,7 @@ export default {
     },
     toggleSubmit() {
         //post 寫法
-      this.axios.post('http://127.0.0.1:9000/nn/buy', {
+      this.axios.post('http://127.0.0.1:9000/customer/buy', {
         // post 參數放這裡
         CustomerID: this.firebase.auth().currentUser.email,
       })
@@ -163,7 +163,7 @@ export default {
       });
     },
     getSensorData() {
-        this.axios.get('http://127.0.0.1:9000/nn/clickCart', {
+        this.axios.get('http://127.0.0.1:9000/customer/clickCart', {
         params: {
           //get 參數放這裡
           CustomerID: this.firebase.auth().currentUser.email ,

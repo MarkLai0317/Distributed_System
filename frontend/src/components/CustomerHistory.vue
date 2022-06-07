@@ -63,7 +63,7 @@ export default {
        }
       //last page
       //get 寫法
-      this.axios.get('http://127.0.0.1:9000/nn/history', {
+      this.axios.get('http://127.0.0.1:9000/customer/history', {
         params: {
           //get 參數放這裡
           CustomerID: this.CustomerID,
@@ -98,7 +98,7 @@ export default {
        }
       //next pagegti
       //get 寫法
-      this.axios.get('http://127.0.0.1:9000/nn/history', {
+      this.axios.get('http://127.0.0.1:9000/customer/history', {
         params: {
           //get 參數放這裡
           CustomerID: this.CustomerID,
@@ -129,7 +129,7 @@ export default {
 
   },
   created(){
-      this.axios.get('http://127.0.0.1:9000/nn/getHistoryNum', {
+      this.axios.get('http://127.0.0.1:9000/customer/getHistoryNum', {
         params: {
           //get 參數放這裡
           CustomerID: this.CustomerID,
@@ -153,11 +153,11 @@ export default {
 
     this.page=1;
     //get 寫法
-      this.axios.get('http://127.0.0.1:9000/nn/history', {
+      this.axios.get('http://127.0.0.1:9000/customer/history', {
         params: {
           //get 參數放這裡
           CustomerID: this.CustomerID,
-          page: this.page,
+          page: 1,
         }
       })
       .then(response=> {//  get 回來的 資料 處理
