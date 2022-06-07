@@ -1,5 +1,6 @@
 const express = require('express');
 const config = require('./config');
+const path = require('path');
 const app = express();
 const port = 9000 || process.env.PORT;
 //const quotesRouter = require('./routes/quotes');
@@ -73,6 +74,13 @@ app.use('/customer', customerRouter({shard:shard}))
 app.use('/manager', managerRouter({shard:shard}))
 //app.use('/chat', chatRouter({shard: shard}))
 app.use('/chat', testChatRouter)
+
+//app.use(express.static(path.join(__dirname, '../my-app/dist')));
+//                                             以上是dist的路徑 看你放哪
+//                                         以下是dist的路徑/index.html
+// app.get('/', (req,res) => {
+//   res.sendFile(path.join(__dirname, '../my-app/dist/index.html'));
+// });                                  
 
 
 app.listen(port, () => {
