@@ -1,4 +1,59 @@
 <template>
+  <div id="app">
+    <input type="text" v-model="message" placeholder="請輸入訊息"/>
+    <button @click="publish('/chat/1', 'mqtt test')">提交訊息</button>
+    <button @click="listen('/chat/1')">檢查訊息</button>
+  </div>
+</template>
+
+<script>                                                        
+  export default{
+    name:'app',
+    data(){
+      return{                   
+        message:""
+      }
+    },
+    methods:{
+      publish(params, msg){
+        var mqtt=require('mqtt');
+        const client=mqtt.connect('ws://localhost:8083/mqtt')                         
+        client.on('connect', function(){
+          console.log('Publish Method Connected')
+          client.subscribe(params,function(){
+            console.log('Publish Method Subscribe the Topic: ', params)
+          })
+        })
+
+        client.publish(params, msg, { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }else{
+            console.log('Publish Message: ', msg)
+          }
+        })
+      },
+      listen(params){
+        var mqtt=require('mqtt');
+        const client=mqtt.connect('ws://localhost:8083/mqtt')
+        client.on('connect', function () {
+          console.log('Listen Method Connected')
+          client.subscribe(params,function(){
+            console.log('Listen Method Subscribe the Topic: ', params)
+        })
+          client.on('message', (topic, payload) => {
+            console.log('Received Message:', topic, payload.toString())
+        })
+      })
+    }
+  }
+      
+}
+</script>
+
+
+<!--
+<template>
   <el-table :data="tableData" style="width: 100%">
     <el-table-column type="expand">
       <template #default="props">
@@ -101,3 +156,4 @@ export default {
   },
 }
 </script>
+-->
