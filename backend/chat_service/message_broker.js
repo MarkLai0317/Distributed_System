@@ -1,7 +1,10 @@
 // @吳尚恩
 const aedes = require("aedes")();
 const server = require("net").createServer(aedes.handle);
+const httpServer = require('http').createServer()
+const ws = require('websocket-stream')
 const port = 8887;
+const wsPort = 8083;
 
 // create server
 server.listen(port, (err, res) => {
@@ -10,6 +13,14 @@ server.listen(port, (err, res) => {
 	}
 	console.log("server started and listening on port ", port);
 });
+
+ws.createServer({
+	server: httpServer
+  }, aedes.handle)
+
+httpServer.listen(wsPort, function () {
+	console.log('websocket server listening on port', wsPort)
+})  
 
 // client on connect
 aedes.on("client", (client) => {
