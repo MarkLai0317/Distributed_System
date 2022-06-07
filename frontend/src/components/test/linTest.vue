@@ -1,8 +1,9 @@
 <template>
   <div id="app">
-    <input type="text" v-model="message" placeholder="請輸入訊息"/>
-    <button @click="publish('/chat/1', 'mqtt test')">提交訊息</button>
-    <button @click="listen('/chat/1')">檢查訊息</button>
+    <input type="text" v-model="tempMsg" placeholder="請輸入訊息"/>
+    <button @click="publish('/chat/1', tempMsg)">提交訊息</button>
+    <div>訊息:{{message}}</div>
+    <!--<div>暫時訊息:{{tempMsg}}</div>-->
   </div>
 </template>
 
@@ -11,17 +12,34 @@
     name:'app',
     data(){
       return{                   
-        message:""
+        message:"",
+        tempMsg:"",
       }
     },
+
+    created: function(){
+      var mqtt=require('mqtt');
+      const client=mqtt.connect('ws://localhost:8083/mqtt')
+      client.on('connect', function () {
+        console.log('Listen Method Connected')
+        client.subscribe('/chat/1',function(){
+          console.log('Listen Method Subscribe the Topic: /chat/1')
+        })
+        client.on('message', (topic, payload) => {
+          this.message=payload.toString()
+          console.log('Received Message:', topic, payload.toString())
+        })
+      })
+    },
+
     methods:{
       publish(params, msg){
         var mqtt=require('mqtt');
         const client=mqtt.connect('ws://localhost:8083/mqtt')                         
         client.on('connect', function(){
-          console.log('Publish Method Connected')
+          //console.log('Publish Method Connected')
           client.subscribe(params,function(){
-            console.log('Publish Method Subscribe the Topic: ', params)
+            //console.log('Publish Method Subscribe the Topic: ', params)
           })
         })
 
@@ -29,11 +47,12 @@
           if (error) {
             console.error(error)
           }else{
+            this.message=msg
             console.log('Publish Message: ', msg)
           }
         })
       },
-      listen(params){
+      /*listen(params){
         var mqtt=require('mqtt');
         const client=mqtt.connect('ws://localhost:8083/mqtt')
         client.on('connect', function () {
@@ -45,12 +64,16 @@
             console.log('Received Message:', topic, payload.toString())
         })
       })
+    }*/
+  },
+  
+  watch:{
+    message: function(newMsg){
+      console.log('Received Message: ', newMsg)
     }
   }
-      
 }
 </script>
-
 
 <!--
 <template>
