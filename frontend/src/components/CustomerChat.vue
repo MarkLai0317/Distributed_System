@@ -16,8 +16,13 @@
       <el-main>
         <div v-for="msg in CurrentMsg" v-bind:key="msg.id" align="left">
           <div v-if="msg.From === this.firebase.auth().currentUser.email ">You : {{msg.Msg}}</div>
-          <div v-else>shop{{msg.From[7]}}{{msg.From[8]}}:{{msg.Msg}}</div>
+          <div v-else>{{CurrentRow.ShopName}} : {{msg.Msg}}</div>
         </div>
+
+        <div>message:{{message}}</div>
+        <el-input v-model="tempMsg" placeholder="" style="width:500px"></el-input>
+        <el-button @click="publish('/chat/1087030'+(this.CurrentRow.ShopID-30).toString()+'@nccu.edu.tw', tempMsg)">send</el-button>
+
       </el-main>
 
     </el-container>
@@ -32,8 +37,10 @@
       return {
         ShopList: [], 
         CurrentRow: null,
-        HistoryMsg: {},
-        CurrentMsg: {}
+        HistoryMsg: [],
+        CurrentMsg: [],
+        message:"", // message recieved
+        tempMsg:"", // imput message
       }
     },
 
@@ -43,7 +50,7 @@
         this.CurrentRow = val;
         console.log("val,this.CurrentRow", this.CurrentRow);
         console.log(val.ShopID);
-        this.CurrentMsg = this.HistoryMsg["1087030" + val.ShopID + "@nccu.edu.tw"];
+        this.CurrentMsg = this.HistoryMsg["1087030" + (val.ShopID-30).toString() + "@nccu.edu.tw"];
         console.log("currentMsg", this.CurrentMsg);
       },
       getAllShopID(){
@@ -90,12 +97,64 @@
           
         })
 
+      },
+      connectBroker(){
+        var mqtt=require('mqtt');
+        const client=mqtt.connect('ws://localhost:8083/mqtt')
+
+        var Email = this.firebase.auth().currentUser.email;
+        var receivedMsgObj;
+
+        client.on('connect', () => {
+          
+          console.log('Listen Method Connected');
+          client.subscribe( '/chat/' + Email ,function(){
+            console.log('subscribed /chat/' + Email);
+          });
+          client.on('message', (topic, payload) => {
+            
+            receivedMsgObj = JSON.parse(payload.toString());
+            console.log(receivedMsgObj);
+            this.CurrentMsg.push(receivedMsgObj);
+            
+          });
+          
+        })
+      },
+      publish(params, msg){
+        
+        this.tempMsg = ""; // emty the input
+
+        var mqtt=require('mqtt');
+        const client=mqtt.connect('ws://localhost:8083/mqtt')    
+
+         var msgObj = { "Msg" : msg, 
+          "From" : this.firebase.auth().currentUser.email,
+          "Date" : Date.now()
+        }
+
+        this.CurrentMsg.push(msgObj);
+
+        client.on('connect', function () {
+          console.log('Publish Method Connected');
+          client.publish(params, JSON.stringify(msgObj), function(){
+            console.log('published ', msgObj);
+          })
+        })                   
+        
       }
     },
 
     created(){
       this.getAllShopID(),
-      this.getHistoryMsg()
+      this.getHistoryMsg(),
+      this.connectBroker()
+    },
+    watch:{
+      message: function(newMsg){
+        console.log('Received Message: ', newMsg)
+        this.message = newMsg
+      }
     }
   }
 </script>
