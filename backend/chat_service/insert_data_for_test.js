@@ -8,29 +8,29 @@ MongoClient.connect("mongodb://localhost:27017",function(err, client){
     const db = client.db('dis_sys')
 
     var obj = {
-        _id: "90",
+        _id: "108703031@nccu.edu.tw",
         msgs:{
-            shop01: [
+            "108703090@nccu.edu.tw": [
                 {
                 Msg: "Hello",
-                From: "client01",
+                From: "108703031@nccu.edu.tw",
                 Date: "12345678"
                 }, 
                 {
                 Msg: "Hello you too",
-                From: "shop01",
+                From: "108703090@nccu.edu.tw",
                 Date: "12345678"
                 }
             ],
-            shop02: [
+            "108703091@nccu.edu.tw": [
                 {
                 Msg: "Hello",
-                From: "client01",
+                From: "108703031@nccu.edu.tw",
                 Date: "12345678"
                 }, 
                 {
                 Msg: "Hello you too",
-                From: "shop01",
+                From: "108703091@nccu.edu.tw",
                 Date: "12345678"
                 }
             ]
@@ -38,17 +38,17 @@ MongoClient.connect("mongodb://localhost:27017",function(err, client){
     }
 
     var obj2 = {
-        _id: "91",
+        _id: "108703030@nccu.edu.tw",
         msgs:{
-            shop01: [
+            "108703090@nccu.edu.tw": [
                 {
                 Msg: "Hello",
-                From: "client01",
+                From: "108703030@nccu.edu.tw",
                 Date: "12345678"
                 }, 
                 {
                 Msg: "Hello you too",
-                From: "shop01",
+                From: "108703090@nccu.edu.tw",
                 Date: "12345678"
                 }
             ]
