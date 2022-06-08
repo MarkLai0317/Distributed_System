@@ -10,27 +10,27 @@ MongoClient.connect("mongodb://localhost:27017",function(err, client){
     var obj = {
         _id: "108703031@nccu.edu.tw",
         msgs:{
-            "108703090@nccu.edu.tw": [
+            "108703060@nccu.edu.tw": [
                 {
                 Msg: "Hello",
                 From: "108703031@nccu.edu.tw",
                 Date: "12345678"
                 }, 
                 {
-                Msg: "Hello you too",
-                From: "108703090@nccu.edu.tw",
+                Msg: "Hi",
+                From: "108703060@nccu.edu.tw",
                 Date: "12345678"
                 }
             ],
-            "108703091@nccu.edu.tw": [
+            "108703061@nccu.edu.tw": [
                 {
                 Msg: "Hello",
                 From: "108703031@nccu.edu.tw",
                 Date: "12345678"
                 }, 
                 {
-                Msg: "Hello you too",
-                From: "108703091@nccu.edu.tw",
+                Msg: "Hi",
+                From: "108703061@nccu.edu.tw",
                 Date: "12345678"
                 }
             ]
@@ -40,22 +40,55 @@ MongoClient.connect("mongodb://localhost:27017",function(err, client){
     var obj2 = {
         _id: "108703030@nccu.edu.tw",
         msgs:{
-            "108703090@nccu.edu.tw": [
+            "108703060@nccu.edu.tw": [
                 {
                 Msg: "Hello",
                 From: "108703030@nccu.edu.tw",
                 Date: "12345678"
                 }, 
                 {
-                Msg: "Hello you too",
-                From: "108703090@nccu.edu.tw",
+                Msg: "Hi",
+                From: "108703060@nccu.edu.tw",
                 Date: "12345678"
                 }
             ]
         }
     }
 
-    var manyobj = [obj, obj2]
+    var obj3 = {
+        _id: "108703060@nccu.edu.tw",
+        msgs:{
+            "108703030@nccu.edu.tw": [
+                {
+                Msg: "Hello",
+                From: "108703030@nccu.edu.tw",
+                Date: "12345678"
+                }, 
+                {
+                Msg: "Hi",
+                From: "108703060@nccu.edu.tw",
+                Date: "12345678"
+                }
+            ],
+            "108703031@nccu.edu.tw": [
+                {
+                Msg: "Hello",
+                From: "108703031@nccu.edu.tw",
+                Date: "12345678"
+                }, 
+                {
+                Msg: "Hi",
+                From: "108703060@nccu.edu.tw",
+                Date: "12345678"
+                }
+            ]
+        }
+    }
+        
+
+ 
+
+    var manyobj = [obj, obj2, obj3]
 
     console.log(manyobj)
 
