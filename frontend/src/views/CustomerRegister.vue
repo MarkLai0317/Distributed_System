@@ -66,7 +66,7 @@ export default {
         if(!resobj.exist){
           this.axios.post('http://127.0.0.1:9000/customer/register/Customer', {
             // post 參數放這裡
-            Email: this.email,
+            CustomerID: this.email,
             Name: this.name,
             PhoneNum: this.phoneNumber
           })

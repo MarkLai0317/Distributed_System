@@ -63,7 +63,7 @@ export default {
     },
     addToDatabase() {
       this.axios.post('http://127.0.0.1:9000/manager/register/Manager', {
-          Email: this.email,
+          ManagerID: this.email,
           Name: this.name, 
           PhoneNum: this.phoneNumber, 
           ShopName: this.ShopName
