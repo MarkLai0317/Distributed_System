@@ -72,12 +72,12 @@ MongoClient.connect("mongodb://localhost:27017",function(err, client){
             ],
             "108703031@nccu.edu.tw": [
                 {
-                Msg: "Hello",
+                Msg: "hi ~",
                 From: "108703031@nccu.edu.tw",
                 Date: "12345678"
                 }, 
                 {
-                Msg: "Hi",
+                Msg: "Hello !",
                 From: "108703060@nccu.edu.tw",
                 Date: "12345678"
                 }
