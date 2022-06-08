@@ -1,286 +1,65 @@
 <template>
-<div>
-    <h4>Select Type: </h4>
-    <el-select v-model="TypeValue" placeholder="Select Type" @change="selectType">
-      <el-option
-        v-for="item in TypeOptions"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-select>
-
-    <!-- <td nowrap>select shop: </td> -->
-    <h4>Select Shop</h4>
-    <el-select v-model="ShopValue" placeholder="Select Type" @change="selectShop">
-      <el-option
-        v-for="item in ShopOptions"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value">
-      </el-option>
-    </el-select>
-
-  <el-table :data="currentPage" style="width: 100%" align="center">
+  <div >
+    <div>message:{{message}}</div>
+    <el-input v-model="tempMsg" placeholder=""> </el-input>
+    <el-button @click="publish('/chat/1', tempMsg)">send</el-button>
     
-    <el-table-column prop="ProductName" label="Product" width="150" align="center"/>
-    <el-table-column prop="ShopName" label="Shop" width="150" align="center"/>
-    <el-table-column prop="RemainNumber" label="Remain" width="150" align="center"/>
-    <el-table-column prop="Price" label="Price" width="150" align="center"/>
-    <el-table-column prop="Type" label="Type" width="150" align="center"/>
-    <!-- -->
-    <el-table-column width="150" align="center">
-      <template #default="scope" >
-        <el-button
-          size="mini"
-          :disabled="scope.row.RemainNumber<1?true:false"
-          @click="pressAdd(scope.$index, scope.row)">Add</el-button>
-      </template>
-    </el-table-column>
-    <!-- -->
-
-  </el-table>
-  <el-pagination
-    background
-    layout="prev, pager, next"
-    :page-size="pageSize"
-    :total=maxPage
-    @current-change="getPage">
-  </el-pagination>
-  <!-- test button -->
-     
-</div>
+    <!--<div>暫時訊息:{{tempMsg}}</div>-->
+  </div>
 </template>
 
-<script >
-export default {
-  data() {
-    return {
-      page: 1,
-      maxPage: 50,
-      pageSize: 10,
-      currentType: '',
-      currentShopName: '', 
-      currentPage: [],
-      TypeValue: '',
-      ShopValue: '',
-      // api
-      TypeOptions: [{
-          value: '',
-          label: 'all'
-        }],
-      ShopOptions: [{
-          value: '',
-          label: 'all'
-        },]
-    }
-  },
-  created(){
-    this.getPage(1),
-    this.getMaxPage(),
-    this.getAllType(),
-    this.getAllShopID(),
-    this.testClickCart(),
-    this.testHistory()
-  },
-  methods: {
-    // get the current page
-    getPage(val) {
+<script>                                                        
+  export default{
 
-      this.page = val
-      //get 寫法
-      this.axios.get('http://127.0.0.1:9000/customer/searchProduct', {
-        params: {
-          //get 參數放這裡
-          ShopID: this.currentShopName, // ShopName ---
-          Type: this.currentType,
-          page: val
-        }
-      })
-      .then(response=> {//  get 回來的 資料 處理
-        let res = JSON.stringify(response.data); // 先 變字串
-        let resobj = JSON.parse(res) // 再變 object
-        this.currentPage = resobj.data
-        // 就可以做其他處理 像存到data 裡面
-        console.log(resobj.data)
-        console.log(val)
-      
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .then(function () {
-        // always executed
-      })
+    data(){
+      return{                   
+        message:"",
+        tempMsg:"",
+      }
     },
-    //////
-    pressAdd(index,row) {
-      console.log(index)
-      console.log(row)
-      this.axios.post('http://127.0.0.1:9000/customer/add', {
-        // post 參數放這裡
-        CustomerID: this.firebase.auth().currentUser.email,
-        ShopID: row.ShopID,
-        ProductSupplierID: row.SupplierID,
-        ProductID: row.ProductID
-      })
-      .then(response => {// 回傳的 response 處理
-        console.log(response);
-        let res = JSON.stringify(response.data); // 先 變字串
-        let resobj = JSON.parse(res) 
-        if(resobj.error){
-          this.error = resobj.error
-        }
-        else{
-          console.log('add succeed!')
-        }
 
+    created: function(){
+      var mqtt=require('mqtt');
+      const client=mqtt.connect('ws://localhost:8083/mqtt')
+      client.on('connect', function () {
+        console.log('Listen Method Connected')
+        client.subscribe('/chat/1',function(){
+          console.log('Listen Method Subscribe the Topic: /chat/1')
+        })
+        client.on('message', (topic, payload) => {
+          this.message=payload.toString()
+          console.log('Received Message:', topic, payload.toString())
+        })
       })
-      .catch(error => {
-        console.log(error)
-        this.error = 'register fail'
-        console.log(this.page)
-      });
     },
-    ////
-    selectType(val){
-      this.currentType = val
-      this.getPage(this.page)
-      this.getMaxPage()
-    },
-    selectShop(val){
-      this.currentShopName = val
-      this.getPage(this.page)
-      this.getMaxPage()
-    },
-    // get the total number of pages 
-    getMaxPage(){
-      this.axios.get('http://127.0.0.1:9000/customer/maxPage', {
-        params: {
-          //get 參數
-          ShopID: this.currentShopName, 
-          Type: this.currentType,
-        }
-      })
-      .then(response=> {
-        let res = JSON.stringify(response.data); 
-        let resobj = JSON.parse(res)
-        console.log(resobj)
-        this.maxPage = (resobj.page*10)
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .then(function () {
-        // always executed
-      })
 
-    },
-    getAllType(){
-      this.axios.get('http://127.0.0.1:9000/customer/getType', {
-        params: {
-          // no parameters
-        }
-      })
-      .then(response=> {
-        let res = JSON.stringify(response.data); 
-        let resobj = JSON.parse(res)
-        let arr = resobj.data
-        console.log(arr)
-        for(var i=0;i<arr.length;++i){
-          this.TypeOptions.push({ value: arr[i].Type, label:arr[i].Type })
-        }
+    methods:{
+      publish(params, msg){
+        var mqtt=require('mqtt');
+        const client=mqtt.connect('ws://localhost:8083/mqtt')                         
+        client.on('connect', function(){
+          //console.log('Publish Method Connected')
+          client.subscribe(params,function(){
+            //console.log('Publish Method Subscribe the Topic: ', params)
+          })
+        })
 
-        
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .then(function () {
-        // always executed
-      })
-    },
-    getAllShopID(){
-      this.axios.get('http://127.0.0.1:9000/customer/getShopList', {
-        params: {
-          // no parameters
-        }
-      })
-      .then(response=> {
-        let res = JSON.stringify(response.data); 
-        let resobj = JSON.parse(res)
-        let arr = resobj.data
-        console.log(arr)
-        for(var i=0;i<arr.length;++i){
-          this.ShopOptions.push({ value: arr[i].ShopID, label: arr[i].ShopName })
-        }
-        
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      .then(function () {
-        // always executed
-      })
-    },
-    testClickCart() {
-        this.axios.get('http://127.0.0.1:9000/customer/clickCart', {
-        params: {
-          //get 參數放這裡
-          CustomerID: this.firebase.auth().currentUser.email ,
-          
-        }
-      })
-      .then(response=> {//  get 回來的 資料 處理
-        let res = JSON.stringify(response.data); // 先變字串
-        // let resobj = JSON.parse(res) // 再變 object
-        // this.tableData = resobj.data
-        // 就可以做其他處理 像存到data 裡面
-        console.log("getCartInformation: ", res, response)
-      })
-      .catch(error => {
-        console.log(error);
-      })
-    },
-    testHistory(){
-      this.axios.get('http://127.0.0.1:9000/customer/history', {
-          params: {
-            //get 參數放這裡
-            CustomerID: this.CustomerID,
-            page: this.page,
+        client.publish(params, msg, { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }else{
+            this.message=msg
+            console.log('Publish Message: ', msg)
           }
         })
-        .then(response=> {//  get 回來的 資料 處理
-          let res = JSON.stringify(response.data); // 先變字串
-          let resobj = JSON.parse(res) // 再變 object
-          console.log("history:",response, res, resobj)
-          /*
-          this.table = resobj
-          // 就可以做其他處理 像存到data 裡面
-          // Date and Oid
-          this.order.Date = resobj.data[0].Time.split(' ')[0];
-          this.order.Oid = resobj.data[0].HistoryID;
-          this.order.Price = resobj.data[0].TotalPrice;
-          // table data
-          this.table = resobj.data[0].PurchaseHistory;
-          */
-        })
-        .catch(error => {
-          console.log("get data failed: ",error);
-        })
-        .then(function () {
-          // always executed
-        })
-    }
-
-
-    
+      },
+      
   },
-  computed: {
-    
+  
+  watch:{
+    message: function(newMsg){
+      console.log('Received Message: ', newMsg)
+    }
   }
 }
 </script>
-<style lang="">
-  
-</style>

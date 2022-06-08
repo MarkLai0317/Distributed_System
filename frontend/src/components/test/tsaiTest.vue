@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header>
-      <span>Chat Room</span>
+      <h2>Chat Room</h2>
     </el-header> 
     <el-container>
 
@@ -22,11 +22,11 @@
       </el-aside>
 
       <el-main>
-        <h5 v-for="msg in CurrentMsg" 
+        <p v-for="msg in CurrentMsg" 
         v-bind:key="msg.id"
         align = "left">
         {{msg.From}}:{{msg.Msg}}
-        </h5>
+        </p>
       </el-main>
       
     </el-container> 
@@ -39,7 +39,7 @@
   export default {
     data() {
       return {
-        ShopList: [{ShopName: "Shop01", ShopID: "01"}], // should be empty. (the current shopList is for testing)
+        ShopList: [], 
         CurrentRow: null,
         HistoryMsg: {},
         CurrentMsg: {}
@@ -52,7 +52,7 @@
         this.CurrentRow = val;
         console.log("val,this.CurrentRow", this.CurrentRow);
         console.log(val.ShopID);
-        this.CurrentMsg = this.HistoryMsg["shop"+val.ShopID];
+        this.CurrentMsg = this.HistoryMsg["1087030" + val.ShopID + "@nccu.edu.tw"];
         console.log("currentMsg", this.CurrentMsg);
       },
       getAllShopID(){
@@ -81,8 +81,8 @@
       getHistoryMsg(){
           this.axios.get('http://127.0.0.1:9000/chat/getHistory', {
           params: {
-            // UserId: this.firebase.auth().currentUser.email
-            UserId: "90"
+            UserId: this.firebase.auth().currentUser.email
+            // UserId: "108703031@nccu.edu.tw"
           }
         })
         .then(response=> {
