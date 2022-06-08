@@ -62,7 +62,7 @@ export default {
       this.checkExist()
     },
     addToDatabase() {
-      this.axios.post('http://127.0.0.1:9000/mark/register/Manager', {
+      this.axios.post('http://127.0.0.1:9000/manager/register/Manager', {
           Email: this.email,
           Name: this.name, 
           PhoneNum: this.phoneNumber, 
@@ -78,7 +78,7 @@ export default {
     },
     checkExist(){
       
-      return this.axios.get('http://127.0.0.1:9000/mark/existManager',{
+      return this.axios.get('http://127.0.0.1:9000/manager/existManager',{
         params: {
           //get 參數放這裡
           email: this.email,
