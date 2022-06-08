@@ -21,16 +21,18 @@
   6.  可以與買家溝通
 <br/><br/>
 
-## use case diagram
+## Use Case Diagram
 ![use case diagram](./image/use_case_diagram.png)
 
 ## Architecture Diagram
 ![architecture](./image/architecture.png)
 
-##  package Diagram
+## Package Diagram
 ![package](./image/shard_express.png)
+![chat_pak_diagram](./image/chat_pak_diagram.png)
 
-
+## Sequence Diagram
+![chat_seq_diagram](./image/chat_seq_diagram.png)
 
 
 ## 系統操作
