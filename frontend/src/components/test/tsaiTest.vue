@@ -2,36 +2,27 @@
   <el-container>
     <el-header>
       <h2>Chat Room</h2>
-    </el-header> 
+    </el-header>
     <el-container>
 
       <el-aside>
-        <el-table
-          ref="singleTable"
-          :data="ShopList"
-          highlight-current-row
-          @current-change="handleCurrentChange"
-          max-height="1000"
-          style="width: 30%">
-          <el-table-column
-            property="ShopName"
-            label="Shops"
-            width="120">
+        <el-table ref="singleTable" :data="ShopList" highlight-current-row @current-change="handleCurrentChange"
+          max-height="1000" style="width: 30%">
+          <el-table-column property="ShopName" label="Shops" width="120">
           </el-table-column>
         </el-table>
       </el-aside>
 
       <el-main>
-        <p v-for="msg in CurrentMsg" 
-        v-bind:key="msg.id"
-        align = "left">
-        {{msg.From}}:{{msg.Msg}}
-        </p>
+        <div v-for="msg in CurrentMsg" v-bind:key="msg.id" align="left">
+          <div v-if="msg.From === '108703031@nccu.edu.tw' ">You : {{msg.Msg}}</div>
+          <div v-else>shop{{msg.From[7]}}{{msg.From[8]}}:{{msg.Msg}}</div>
+        </div>
       </el-main>
-      
-    </el-container> 
 
-    
+    </el-container>
+
+
   </el-container>
 </template>
 
@@ -81,8 +72,8 @@
       getHistoryMsg(){
           this.axios.get('http://127.0.0.1:9000/chat/getHistory', {
           params: {
-            UserId: this.firebase.auth().currentUser.email
-            // UserId: "108703031@nccu.edu.tw"
+            // UserId: this.firebase.auth().currentUser.email
+            UserId: "108703031@nccu.edu.tw"
           }
         })
         .then(response=> {
