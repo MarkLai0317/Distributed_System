@@ -1,11 +1,10 @@
 <template>
   <div>
-    <p>Order history</p>
-    <el-container style="margin-left: 650px">
-      
+    <h2>Order history</h2>
+    <el-container style="margin-left: 400px">
       
       <el-main>
-        <el-row :gutter="30" justify="start">
+        <el-row :gutter="30" justify="start" >
           <el-col :span="2">
             <div class="grid-content">{{ order.Date }}</div>
           </el-col>
@@ -16,18 +15,18 @@
             <div class="grid-content">交易價格 ${{ order.Price }}</div>
           </el-col>
         </el-row>
+
         <el-row>
-        
           <el-table :data="table" >
             <el-table-column prop="ProductName" label="Name" width="220" />
             <el-table-column prop="ShopName" label="Shop" width="150" />
             <el-table-column prop="Num" label="Number" width="80" />
             <el-table-column prop="Price" label="Price" width="100" />
           </el-table>
-        
         </el-row>
+
       </el-main>
-      <p />
+
     </el-container>
     <el-button @click="lastPage" 
     :disabled="this.page==1"
@@ -52,7 +51,7 @@ export default {
       },
       table:[
       ],
-      maxPage:'',
+      maxPage: 2
 
     };
   },
@@ -140,7 +139,7 @@ export default {
         let resobj = JSON.parse(res); // 再變 object
         this.table = resobj;
         // 就可以做其他處理 像存到data 裡面
-        this.maxPage = resobj;
+        this.maxPage = resobj.numHid;
         console.log("Max page",this.maxPage);
         })
       .catch(error => {
@@ -163,7 +162,7 @@ export default {
       .then(response=> {//  get 回來的 資料 處理
         let res = JSON.stringify(response.data); // 先變字串
         let resobj = JSON.parse(res) // 再變 object
-        this.table = resobj
+        // this.table = resobj
         // 就可以做其他處理 像存到data 裡面
         // Date and Oid
         this.order.Date = resobj.data[0].Time.split(' ')[0];
