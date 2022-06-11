@@ -82,12 +82,57 @@
 <br/><br/><br/>
 
 # 安裝執行
-- create database of MySQL 
-<br/> 
-  by running the script below
-  ```
-  some script
-  ```
+
+## Install and Import MySQL
+
+1. Download MySQL at [here](https://dev.mysql.com/downloads/mysql/).
+    * We set username as "root".
+
+2. Go to MySQL shell:
+    ```
+    mysql -u root -p
+    ```
+
+3. Create a data base which is called "relation".
+    ```
+    create database relation;
+    ```
+
+4. Leave MySQL shell.
+    ```
+    quit;
+    ```
+
+5. Move .sql file from terminal to MySQL. (dbexport.sql is the DataBase you want to inport)
+    ```
+    mysql -u root -p relation < {dbexport.sql}
+    ```
+
+## Test
+
+1. Go to MySQL shell again.
+    ```
+    mysql -u root -p
+    ```
+
+2. Go to relation DataBase.
+    ```
+    use relation;
+    ```
+
+3. Check Customer in DataBase.
+    ```
+    select * from Customer;
+    ```
+
+    If there is something in your screen, then you are sucessful.
+
+## Operate System
+
+* Add below code in package.json.
+    ```
+    "mysql2": "^2.3.3"
+    ```
 
 - go to backend/config.js to set your MySQL setting
   ```javascript
