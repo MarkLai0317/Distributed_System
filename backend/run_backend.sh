@@ -1,5 +1,5 @@
 node chat_service/message_broker.js &
-
+node chat_service/all_message_handler.js &
 cd shardings
 node broker.js &
 {
