@@ -19,8 +19,9 @@ client.on('message', function (topic, msg) {
     console.log("topic: " + topic + "訊息:  " + msg.toString())
 
     // parse id from topic and set to msg
-    msg.to = topic.split('/')[2]
-
+    var newMsg = JSON.parse(msg.toString())
+    newMsg.to =  topic.split('/')[2];
+    console.log(newMsg)
     // msg should be a JSON object:
     // {
     //     "from": "clientId",
@@ -29,5 +30,5 @@ client.on('message', function (topic, msg) {
     //     "timestamp" : "UTC 1234"
     // }
 
-    saveMsg(msg.from, msg.to, msg.msg, msg.timestamp)
+    op.saveMsg(newMsg.From, newMsg.to, newMsg.Msg, newMsg.Date)
 })
