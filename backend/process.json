@@ -1,0 +1,51 @@
+{
+  "apps" : [{
+    "name"        : "express_server",
+    "script"      : "./index.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  },{
+    "name"        : "sharding_aedes_broker",
+    "script"      : "./shardings/broker.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  },{
+    "name"        : "sharding_customer-1",
+    "script"      : "./shardings/customer-1.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  },{
+    "name"        : "sharding_customer-2",
+    "script"      : "./shardings/customer-2.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  },{
+    "name"        : "sharding_manager-1",
+    "script"      : "./shardings/manager-1.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  },{
+    "name"        : "sharding_chat",
+    "script"      : "./shardings/chat.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  },{
+    "name"        : "message_aedes_broker",
+    "script"      : "./chat_service/message_broker.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  },{
+    "name"        : "message_handler",
+    "script"      : "./chat_service/all_message_handler.js",
+    "watch"       : false,
+    "exec_mode": "cluster_mode",
+    "instances": 1
+  }]
+}
