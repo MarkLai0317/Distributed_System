@@ -49,7 +49,7 @@ export default {
 
   methods: {
     toggleDelete(row){
-      this.axios.post("http://127.0.0.1:9000/nn/deleteCart", {
+      this.axios.post("http://127.0.0.1:9000/customer/deleteCart", {
             // post 參數放這裡
             CustomerID: this.firebase.auth().currentUser.email,
             ShopID: row.ShopID,
