@@ -83,7 +83,6 @@
 
 # 安裝執行
 
-
 ## Install and Import MySQL
 
 1. Download MySQL at [here](https://dev.mysql.com/downloads/mysql/).
@@ -146,13 +145,22 @@
   ```
 
 - create database of mongoDB 
-<br/> 
-  by running the script below
-  ```
+<br/>
 
+  first, insall mongodb
+  ```console
+  brew install mongodb
   ```
-  
-
+  second, create db named dis_sys in mongodb
+  ```console
+  > use dis_sys
+    switched to db dis_sys
+  ```
+  running the script below
+  ```console
+  node ./backend/chat_service/test/insert_data_for_test.js
+  ```
+  and you should have a collection in "dis_sys" which name is "chat"
 
 - first install PM2 globally
   <br/>
