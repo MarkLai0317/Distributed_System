@@ -133,27 +133,28 @@
     }
   ```
 
-- create database of mongoDB 
+##  create database of mongoDB 
 <br/>
 
-  first, insall mongodb
+* first, insall mongodb
   ```console
-  brew install mongodb
+   brew install mongodb
   ```
-  second, create db named dis_sys in mongodb
+* second, create db named dis_sys in mongodb
   ```console
   > use dis_sys
     switched to db dis_sys
   ```
-  running the script below
+* running the script below
   ```console
   node ./backend/chat_service/test/insert_data_for_test.js
   ```
   and you should have a collection in "dis_sys" which name is "chat"
 
-- first install PM2 globally
+## install PM2 globally
   <br/>
-  run as root
+
+* run as root
   ```
   npm i -g pm2
   ```
@@ -161,6 +162,8 @@
   ```
   sudo npm i -g pm2
   ```
+
+## prepare to run process
 - go to backend and frontend directory and run
   ```
   npm install
@@ -171,9 +174,11 @@
   ```
   if there is error in web, run 
   ```
-  npm riun serve
+  npm run serve
   ```
   in frontend instead
+
+- now you use the website
   
 
 
