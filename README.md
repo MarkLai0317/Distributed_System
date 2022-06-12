@@ -119,7 +119,7 @@
     select * from Customer;
     ```
 
-    If there is something in your screen, then you are sucessful.
+    If there is something in your screen, then mysql is successfully installed.
 
 
 
@@ -172,13 +172,13 @@
   ```
   pm2 start process.json
   ```
-  if there is error in web, run 
+  if there is an error in web, run 
   ```
   npm run serve
   ```
   in frontend instead
 
-- now you use the website
+- now you can use the website
   
 
 
