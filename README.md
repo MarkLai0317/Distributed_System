@@ -149,7 +149,7 @@
   ```console
   node ./backend/chat_service/test/insert_data_for_test.js
   ```
-  and you should have a collection in "dis_sys" which name is "chat"
+  and you should have a collection in "dis_sys" whose name is "chat"
 
 ## install PM2 globally
   <br/>
