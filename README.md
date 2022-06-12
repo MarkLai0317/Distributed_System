@@ -72,12 +72,6 @@
 ![](./image/revenue.png)
 
 <br/><br/><br/>
-## ER Model
-![](./image/er-model.jpeg)
-
-<br/><br/><br/>
-## Relational Schema
-![](./image/relationalSchema.png)
 
 <br/><br/><br/>
 
@@ -108,7 +102,7 @@
     mysql -u root -p relation < {dbexport.sql}
     ```
 
-## Test
+## Test mysql
 
 1. Go to MySQL shell again.
     ```
@@ -127,12 +121,7 @@
 
     If there is something in your screen, then you are sucessful.
 
-## Operate System
 
-* Add below code in package.json.
-    ```
-    "mysql2": "^2.3.3"
-    ```
 
 - go to backend/config.js to set your MySQL setting
   ```javascript
@@ -172,7 +161,7 @@
   ```
   sudo npm i -g pm2
   ```
-- go to backend directory and run
+- go to backend and frontend directory and run
   ```
   npm install
   ```
@@ -180,6 +169,11 @@
   ```
   pm2 start process.json
   ```
+  if there is error in web, run 
+  ```
+  npm riun serve
+  ```
+  in frontend instead
   
 
 
