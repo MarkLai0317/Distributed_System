@@ -12,8 +12,8 @@ const config = {
   database_config:{
     host: env.HOST || 'localhost',
     user: 'root',
-    password: env.PASSWORD || 'charlie9517530',
-    database: env.DATABASE ||'relation'
+    password: env.PASSWORD || '[your password]',
+    database: env.DATABASE || 'relation'
   }
 }
 

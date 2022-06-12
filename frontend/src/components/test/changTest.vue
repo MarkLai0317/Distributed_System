@@ -1,81 +1,65 @@
 <template>
-
-  <h1>Order History</h1>
-  <input type="button" @click="add()" />
-
-  <div class="table">
-    <el-table :data="curPage" style="width: 100%">
+  <div >
+    <div>message:{{message}}</div>
+    <el-input v-model="tempMsg" placeholder=""> </el-input>
+    <el-button @click="publish('/chat/1', tempMsg)">send</el-button>
     
-        <el-table-column  prop="oid" label="Order ID"  align="center" />
-        <el-table-column  prop="time" label="Time"  align="center" />
-        <el-table-column  prop="product" label="Product"  align="center" />
-        <el-table-column  prop="number" label="Number"  align="center" />
-        <el-table-column prop="supplier" label="Supplier" align="center" />
-    
-    </el-table>
+    <!--<div>暫時訊息:{{tempMsg}}</div>-->
   </div>
-
-  <div class="block">
-    <el-pagination layout="prev, pager, next" :total="this.tableData.length" @current-change="setpage" :page-size="pageSize"> </el-pagination>
-  </div>
-
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      tableData: [
-        {
-          oid: '0',
-          time: '2021',
-          product: 'test',
-          number: '1',
-          supplier:'jojo'
-        },
-      ],
-      page:1,
-      pageSize:5,
-    }
-  },
-  computed:{
-    curPage(){
-      return this.tableData.slice(this.pageSize*this.page-this.pageSize,this.pageSize*this.page)
-    }
-  },
-  methods:{
-    add(){
-      this.tableData.push({
-        oid: '0',
-        time: '2021',
-        product: 'test',
-        number: '1',
-        supplier:'jojo'
-      },)
+<script>                                                        
+  export default{
+
+    data(){
+      return{                   
+        message:"",
+        tempMsg:"",
+      }
     },
-    setpage(val){
-      console.log(val)
-      this.page=val
+
+    created: function(){
+      var mqtt=require('mqtt');
+      const client=mqtt.connect('ws://localhost:8083/mqtt')
+      client.on('connect', function () {
+        console.log('Listen Method Connected')
+        client.subscribe('/chat/1',function(){
+          console.log('Listen Method Subscribe the Topic: /chat/1')
+        })
+        client.on('message', (topic, payload) => {
+          this.message=payload.toString()
+          console.log('Received Message:', topic, payload.toString())
+        })
+      })
+    },
+
+    methods:{
+      publish(params, msg){
+        var mqtt=require('mqtt');
+        const client=mqtt.connect('ws://localhost:8083/mqtt')                         
+        client.on('connect', function(){
+          //console.log('Publish Method Connected')
+          client.subscribe(params,function(){
+            //console.log('Publish Method Subscribe the Topic: ', params)
+          })
+        })
+
+        client.publish(params, msg, { qos: 0, retain: false }, (error) => {
+          if (error) {
+            console.error(error)
+          }else{
+            this.message=msg
+            console.log('Publish Message: ', msg)
+          }
+        })
+      },
+      
+  },
+  
+  watch:{
+    message: function(newMsg){
+      console.log('Received Message: ', newMsg)
     }
   }
 }
 </script>
-
-
-<style>
-.el-table-column{
-  left:0;
-  right:0;
-}
-h1{
-  color: brown;
-  /*
-  position:absolute;
-  top:0;
-  bottom:0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  */
-}
-</style>

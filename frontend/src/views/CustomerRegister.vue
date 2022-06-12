@@ -53,7 +53,7 @@ export default {
   methods: {
     pressed() {
 
-      this.axios.get('http://127.0.0.1:9000/mark/existCustomer',{
+      this.axios.get('http://127.0.0.1:9000/customer/existCustomer',{
         params: {
           //get 參數放這裡
           email: this.email,
@@ -64,9 +64,9 @@ export default {
         let resobj = JSON.parse(res)
         
         if(!resobj.exist){
-          this.axios.post('http://127.0.0.1:9000/mark/register/Customer', {
+          this.axios.post('http://127.0.0.1:9000/customer/register/Customer', {
             // post 參數放這裡
-            Email: this.email,
+            CustomerID: this.email,
             Name: this.name,
             PhoneNum: this.phoneNumber
           })

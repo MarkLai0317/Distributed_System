@@ -3,7 +3,8 @@
     <el-button @click="signOut">logout</el-button>
     <el-button @click="toBuy">Products</el-button> 
     <el-button @click="toCart">Cart</el-button>
-    <el-button @click="toHistory">History</el-button> 
+    <el-button @click="toHistory">History</el-button>
+    <el-button @click="toChat">Chat</el-button> 
   </el-container>
 </template>
 <script>
@@ -24,6 +25,9 @@ export default {
     },
     toHistory() {
       this.$router.push({path: "history"})
+    },
+    toChat(){ 
+      this.$router.push({path:"chat"})
     },
     signOut() {
       this.firebase

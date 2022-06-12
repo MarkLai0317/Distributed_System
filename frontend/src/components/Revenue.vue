@@ -173,7 +173,7 @@ export default defineComponent({
     getSensorData() {
       var email=this.firebase.auth().currentUser.email
       //get 寫法
-      this.axios.get('http://127.0.0.1:9000/ni/Revenue', {
+      this.axios.get('http://127.0.0.1:9000/manager/Revenue', {
         params: {
           //get 參數放這裡
           ManagerID:email,

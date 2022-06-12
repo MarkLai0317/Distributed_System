@@ -3,7 +3,7 @@
     <el-select
       v-model="currentHouse"
       placeholder="Select Store House"
-      @change="selectHouse"
+      @change="selectStorehouse"
     >
       <el-option
         v-for="item in StoreHouses"
@@ -42,7 +42,7 @@
       <!-- -->
       <el-table-column label="Order" width="80">
         <template #default="scope">
-          <el-button size="mini" :disabled="this.currentHouse=='Select House'" @click="pressOrder(scope.$index, scope.row)"
+          <el-button size="mini" :disabled="this.currentHouse=='Select Storehouse'" @click="pressOrder(scope.$index, scope.row)"
             >Order</el-button
           >
         </template>
@@ -69,7 +69,7 @@ export default {
       pageSize: 5,
       productTable: [],
       StoreHouses: [],
-      currentHouse: 'Select House',
+      currentHouse: 'Select Storehouse',
       ManagerID: this.firebase.auth().currentUser.email,
     };
   },
@@ -79,12 +79,12 @@ export default {
       console.log(row);
       console.log(this.productTable[index]);
     },
-    selectHouse(val) {
+    selectStorehouse(val) {
       this.currentHouse = val;
     },
     getStoreHouse(mid) {
       this.axios
-        .get("http://127.0.0.1:9000/ni/GetStoreHouseID", {
+        .get("http://127.0.0.1:9000/manager/GetStoreHouseID", {
           params: {
             ManagerID: mid,
           },
@@ -128,7 +128,7 @@ export default {
 
       //post 寫法
       this.axios
-        .post("http://127.0.0.1:9000/nn/orderButton", {
+        .post("http://127.0.0.1:9000/manager/orderButton", {
           // post 參數放這裡
           StoreHouseID: StoreHouseID,
           ShopManagerID: ShopManagerID,
@@ -163,7 +163,7 @@ export default {
   created() {
     //get all product
     this.axios
-      .get("http://127.0.0.1:9000/ni/Order", {
+      .get("http://127.0.0.1:9000/manager/Order", {
         params: {
           // no params
         },
@@ -188,7 +188,7 @@ export default {
       });
     //---------
     this.axios
-      .get("http://127.0.0.1:9000/ni/GetStoreHouseID", {
+      .get("http://127.0.0.1:9000/manager/GetStoreHouseID", {
         params: {
           ManagerID: this.firebase.auth().currentUser.email,
         },
