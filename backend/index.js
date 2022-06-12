@@ -76,11 +76,13 @@ app.use('/manager', managerRouter({shard:shard}))
 // app.use('/chat', chatRouter({shard: shard}))
 app.use('/chat', testChatRouter({shard:shard}))
 
-//app.use(express.static(path.join(__dirname, '../my-app/dist')));
+app.use('/web',express.static(path.join(__dirname, '../frontend/web')));
 //                                             以上是dist的路徑 看你放哪
 //                                         以下是dist的路徑/index.html
-// app.get('/', (req,res) => {
-//   res.sendFile(path.join(__dirname, '../my-app/dist/index.html'));
+
+console.log(path.join(__dirname, '../frontend/dist'))
+// app.get('/web', (req,res) => {
+//    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 // });                                  
 
 
